@@ -1,52 +1,33 @@
 const { response } = require('express');
-const usersDataBase = require('../models/usersModel')
-
-const getAllDataUsers = async () => {
-    let result = [];
-    try{
-        const dataUsers = await usersDataBase.find({});
-        result = dataUsers;
-    }catch (error){
-        console.error("Error en la consulta", error)
-    }
-
-    return result;
-}
-
-
-const getUserByUsername = (usernametoFind) =>{
-    let result = 404;
-    try{
-        let dataUser = usersDataBase.findOne({username: usernametoFind});
-        result = dataUser;
-    }catch (error){
-        result = error;
-    }
-    return result;
-}
-
+const userService = require('../services/userServices')
+const logger = require('../config/winstone');
 
 const allUsers = async (req, res) => {
-    try{
-        const users = await getAllDataUsers();
+    try {
+        const users = await userService.getAllDataUsers();
         res.json(users);
-    }catch (error){
+    } catch (error) {
         res.json({
             error: 404,
             msg: "Upss there is an error..."
         })
+        logger.error(`Service error: ${error}`);
     }
 }
 
 const userByUsername = async (req, res) => {
-    try{
-        const user = await getUserByUsername(req.params.username);
+    try {
+        const user = await userService.getUserByUsername(req.params.username);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
-          }
+        }
         res.json(user);
-    }catch(error){
-        console.error(error);
+    } catch (error) {
+        res.json({
+            error: 404,
+            msg: "Upss there is an error..."
+        });
+        logger.error(`Service error: ${error}`);
     }
 }
 
