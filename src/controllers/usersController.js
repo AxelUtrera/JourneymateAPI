@@ -1,6 +1,7 @@
 const { response } = require('express');
 const userService = require('../services/userServices')
-const logger = require('../config/winstone');
+const Logger = require('../config/winstone');
+const CodeStatus = require('../models/codeStatus');
 
 const allUsers = async (req, res) => {
     try {
@@ -11,7 +12,7 @@ const allUsers = async (req, res) => {
             error: 404,
             msg: "Upss there is an error..."
         })
-        logger.error(`Service error: ${error}`);
+        Logger.error(`Service error: ${error}`);
     }
 }
 
@@ -19,25 +20,32 @@ const userByUsername = async (req, res) => {
     try {
         const user = await userService.getUserByUsername(req.params.username);
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).send({ message: 'User not found' });
         }
-        res.json(user);
+        res.send(user);
     } catch (error) {
-        res.json({
+        res.send({
             error: 404,
             msg: "Upss there is an error..."
         });
-        logger.error(`Service error: ${error}`);
+        Logger.error(`Service error: ${error}`);
     }
 }
 
-const usuariosPost = (req, res = response) => {
-    const { nombre, edad, numero } = req.query;
-    res.json({
-        msg: "api POST desde el controlador",
-        nombre,
-        edad
-    });
+const createNewUser = async (req, res) => {
+    try {
+        const user = req.body;
+        await userService.registerNewUser(user);
+        res.status(CodeStatus.OK).send({
+            msg: `User ${user.username} was registered successfully`,
+            user
+        });
+    } catch (error) {
+        res.json({
+            code: CodeStatus.PROCESS_ERROR,
+            msg: `Controller error, status: ${error}`
+        });  
+    }
 }
 
 
@@ -65,7 +73,7 @@ const usuariosPatch = (req, res = response) => {
 module.exports = {
     allUsers,
     userByUsername,
-    usuariosPost,
+    createNewUser,
     usuariosPut,
     usuariosDelete,
     usuariosPatch
