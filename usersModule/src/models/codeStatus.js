@@ -3,7 +3,8 @@ const CodeStatus = {
     PROCESS_ERROR: 500,
     DATA_REQUIRED: 400,
     INVALID_DATA: 404,
-    PENDING_TO_PROCESS: 1
+    PENDING_TO_PROCESS: 1,
+    USER_NOT_FOUND : 403
 };
 
 
