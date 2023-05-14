@@ -5,7 +5,7 @@ const CodeStatus = {
     INVALID_DATA: 404,
     PENDING_TO_PROCESS: 1,
     USER_NOT_FOUND : 403,
-    CONFLICT : 409
+    NOT_FOUND : 404
 };
 
 
