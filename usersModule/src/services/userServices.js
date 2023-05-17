@@ -1,5 +1,5 @@
-const User = require("../models/usersModel")
-const Logger = require('../config/winstone');
+const User = require("../models/usersModel");
+const Logger = require('../config/logger');
 const CodeStatus = require("../models/codeStatus");
 
 const getAllDataUsers = async () => {
@@ -8,7 +8,7 @@ const getAllDataUsers = async () => {
     const dataUsers = await User.find({});
     result = dataUsers;
   } catch (error) {
-    Logger.error(`Service error: ${error}`);
+    Logger.error(`Controller service error: ${error}`);
   }
 
   return result;
@@ -61,27 +61,27 @@ const deleteUserByUsername = (usernameToDelete) => {
 const findUserByUsername = (usernameToFind) => {
   return new Promise((resolve, reject) => {
     User.findOne({ username: usernameToFind })
-    .then((result) => {
-      resolve(result);
-    })
-    .catch((error) => {
-      reject(CodeStatus.INVALID_DATA);
-      Logger.error(`Service error: ${error}`);
-    });
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(CodeStatus.INVALID_DATA);
+        Logger.error(`Service error: ${error}`);
+      });
   })
 }
 
 
-const findUserByEmail= (emailToFind) => {
+const findUserByEmail = (emailToFind) => {
   return new Promise((resolve, reject) => {
-    User.findOne({ email : emailToFind})
-    .then((result) => {
-      resolve(result);
-    })
-    .catch((error) => {
-      reject(CodeStatus.INVALID_DATA);
-      Logger.error(`Service error: ${error}`);
-    });
+    User.findOne({ email: emailToFind })
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(CodeStatus.INVALID_DATA);
+        Logger.error(`Service error: ${error}`);
+      });
   })
 }
 
