@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema(
             type: [
                 {
                     routine: {
-                        type: String,
+                        type: mongoose.Schema.Types.ObjectId,
                         ref: "routine"
                     },
                     _id: false
@@ -72,7 +72,7 @@ const userSchema = new mongoose.Schema(
             type: [
                 {
                     routine: {
-                        type: String,
+                        type: mongoose.Schema.Types.ObjectId,
                         ref: "routine"
                     },
                     _id: false
@@ -84,7 +84,7 @@ const userSchema = new mongoose.Schema(
         users_followed : {
             type: [
                 {
-                    type: String,
+                    type: mongoose.Schema.Types.ObjectId,
                     ref : "user"
                 }
             ],
