@@ -8,13 +8,15 @@ const userSchema = new mongoose.Schema(
         lastname: String,
         username: String,
         password: String,
-        phoneNumber: String,
+        phone_number: String,
         email: String,
         age: Number,
         city: String,
         country: String,
-        userDescription: String,
-        routines_created: [Object]
+        user_description: String,
+        routines_created: [Object],
+        users_followed: [Object],
+        followed_routines: [Object]
     }
 );
 
