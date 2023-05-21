@@ -24,22 +24,22 @@ const userByUsername = async (req, res) => {
 
     try {
         const userFound = await userService.getUserByUsername(req.params.username);
-        if (!userFound) {
-            statusCode  = CodeStatus.INVALID_DATA;
+        if (userFound == null) {
+            code = CodeStatus.INVALID_DATA;
             response = 'User not found';
-        }else{
-            statusCode = CodeStatus.OK;
+        } else {
+            code = CodeStatus.OK;
             response = userFound;
         }
     } catch (error) {
-        statusCode =  CodeStatus.INVALID_DATA
+        code = CodeStatus.INVALID_DATA
         response = "Upss there is an error...";
         Logger.error(`Service error: ${error}`);
     }
 
-    return res.status(statusCode).json({
+    return res.status(code).json({
         code: code,
-        msg : response
+        msg: response
     });
 }
 
@@ -57,12 +57,12 @@ const createNewUser = async (req, res) => {
         const validationErrors = validations.filter((status) => status !== CodeStatus.OK);
 
         if (validationErrors.length > 0) {
-            if(validateUserNotRegistered() !== CodeStatus.OK){
+            if (validateUserNotRegistered(user) !== CodeStatus.OK) {
                 res.json({
                     code: CodeStatus.CONFLICT,
                     msg: "Username or email was previusly registered..."
                 });
-            }else{
+            } else {
                 res.json({
                     code: validationErrors[0],
                     msg: "There is an error with data entry, please retry..."
@@ -94,7 +94,7 @@ const usuariosPut = (req, res) => {
 }
 
 
-const deleteUser = async (req, res ) => {
+const deleteUser = async (req, res) => {
     const usernameToDelete = req.params.username;
     try {
 
@@ -159,7 +159,7 @@ const validateNotEmptyData = (userToValidate) => {
     return resultValidation;
 }
 
-const validateDataTypesEntry = (userToValidate) => { 
+const validateDataTypesEntry = (userToValidate) => {
     let resultValidation = CodeStatus.OK;
     const dataRequiredCode = CodeStatus.DATA_REQUIRED;
 
@@ -196,17 +196,18 @@ const validateDataTypesEntry = (userToValidate) => {
     return resultValidation;
 }
 
-const validateUserNotRegistered = async (user) => {
+const validateUserNotRegistered = async (userToValidate) => {
     let resultValidation = CodeStatus.INVALID_DATA;
-    const resultValidationEmail = await userService.findUserByEmail(user.email);
-    const resultValidationUsername = await userService.findUserByUsername(user.username);
+   
+        const resultValidationEmail = await userService.findUserByEmail(userToValidate.email);
+        const resultValidationUsername = await userService.findUserByUsername(userToValidate.username);
 
-    if (resultValidationEmail == null && resultValidationUsername == null) {
-        resultValidation = CodeStatus.OK;
-    }
-
+        if (resultValidationEmail === null && resultValidationUsername === null) {
+            resultValidation = CodeStatus.OK;
+        }
+    
     return resultValidation;
-} 
+}
 
 
 module.exports = {
