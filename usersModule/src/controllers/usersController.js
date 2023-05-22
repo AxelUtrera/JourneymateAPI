@@ -1,4 +1,3 @@
-const { response } = require('express');
 const userService = require('../services/userServices')
 const Logger = require('../config/logger');
 const CodeStatus = require('../models/codeStatus');
@@ -84,16 +83,6 @@ const createNewUser = async (req, res) => {
     }
 }
 
-
-const usuariosPut = (req, res) => {
-    const { id } = req.params;
-    res.json({
-        msg: "PUT desde la api",
-        id
-    });
-}
-
-
 const deleteUser = async (req, res) => {
     const usernameToDelete = req.params.username;
     try {
@@ -102,28 +91,21 @@ const deleteUser = async (req, res) => {
             await userService.deleteUserByUsername(usernameToDelete);
             res.json({
                 code: CodeStatus.OK,
-                msg: `User ${usernameToDelete} was eliminated... `
+                msg: `User ${usernameToDelete} was eliminated...`
             });
         } else {
             res.json({
                 code: CodeStatus.INVALID_DATA,
-                msg: `User ${usernameToDelete} doesn't exists...`
+                msg: `User ${usernameToDelete} doesn't exist...`
             });
         }
     } catch (error) {
         res.json({
             code: error,
-            msg: "There is an error while "
+            msg: "There is an error while deleting the user..."
         });
         Logger.error(`Controller error: ${error}`);
     }
-}
-
-
-const usuariosPatch = (req, res) => {
-    res.json({
-        msg: "Patch desde la api"
-    });
 }
 
 
@@ -158,6 +140,7 @@ const validateNotEmptyData = (userToValidate) => {
 
     return resultValidation;
 }
+
 
 const validateDataTypesEntry = (userToValidate) => {
     let resultValidation = CodeStatus.OK;
@@ -196,16 +179,20 @@ const validateDataTypesEntry = (userToValidate) => {
     return resultValidation;
 }
 
+
 const validateUserNotRegistered = async (userToValidate) => {
     let resultValidation = CodeStatus.INVALID_DATA;
-   
+    try {
         const resultValidationEmail = await userService.findUserByEmail(userToValidate.email);
         const resultValidationUsername = await userService.findUserByUsername(userToValidate.username);
 
         if (resultValidationEmail === null && resultValidationUsername === null) {
             resultValidation = CodeStatus.OK;
         }
-    
+    } catch (error) {
+        Logger.error(`there is an error at validateUserNotRegistered: ${error}`);
+    }
+
     return resultValidation;
 }
 
@@ -214,7 +201,8 @@ module.exports = {
     getAllUsers,
     userByUsername,
     createNewUser,
-    usuariosPut,
     deleteUser,
-    usuariosPatch
+    validateDataTypesEntry,
+    validateNotEmptyData,
+    validateUserNotRegistered
 };

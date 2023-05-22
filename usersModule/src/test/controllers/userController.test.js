@@ -4,114 +4,318 @@ const CodeStatus = require('../../models/codeStatus');
 
 
 describe('test for usersController', () => {
-    afterEach(() => {
-        jest.restoreAllMocks();
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+
+  it('Return all users', async () => {
+    const req = {};
+    const res = {
+      json: jest.fn(),
+    };
+
+    const users = [
+      { id: 1, name: 'John Doe', email: 'johndoe@example.com' },
+      { id: 2, name: 'Jane Doe', email: 'janedoe@example.com' },
+    ];
+
+    jest.spyOn(UserService, 'getAllDataUsers').mockResolvedValue(users);
+
+    await UserController.getAllUsers(req, res);
+
+    expect(res.json).toHaveBeenCalledWith(users);
+  });
+
+
+  it('should return an error message if there is an error in getAllDataUsers', async () => {
+    const req = {};
+    const res = {
+      json: jest.fn(),
+    };
+
+    const error = new Error('Database connection failed');
+    jest.spyOn(UserService, 'getAllDataUsers').mockRejectedValue(error);
+
+    await UserController.getAllUsers(req, res);
+
+    expect(res.json).toHaveBeenCalledWith({
+      error: CodeStatus.INVALID_DATA,
+      msg: "Upss there is an error..."
     });
+  });
+});
 
-    it('Return all users', async () => {
-        const req = {};
-        const res = {
-            json: jest.fn(),
-        };
+describe('test for userByUsername', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
-        const users = [
-            { id: 1, name: 'John Doe', email: 'johndoe@example.com' },
-            { id: 2, name: 'Jane Doe', email: 'janedoe@example.com' },
-        ];
 
-        jest.spyOn(UserService, 'getAllDataUsers').mockResolvedValue(users);
+  it('should return the user when found', async () => {
+    const req = {
+      params: {
+        username: 'johndoe',
+      },
+    };
 
-        await UserController.getAllUsers(req, res);
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
 
-        expect(res.json).toHaveBeenCalledWith(users);
+    const user = {
+      id: 1,
+      username: 'johndoe',
+      email: 'johndoe@example.com',
+    };
+
+    jest.spyOn(UserService, 'getUserByUsername').mockResolvedValue(user);
+
+    await UserController.userByUsername(req, res);
+
+    expect(UserService.getUserByUsername).toHaveBeenCalledWith(req.params.username);
+    expect(res.status).toHaveBeenCalledWith(CodeStatus.OK);
+    expect(res.json).toHaveBeenCalledWith({
+      code: CodeStatus.OK,
+      msg: user,
     });
+  });
 
 
-    it('should return an error message if there is an error in getAllDataUsers', async () => {
-        const req = {};
-        const res = {
-            json: jest.fn(),
-        };
+  it('should return an error message when the user is not found', async () => {
+    const req = {
+      params: {
+        username: 'Test',
+      },
+    };
 
-        const error = new Error('Database connection failed');
-        jest.spyOn(UserService, 'getAllDataUsers').mockRejectedValue(error);
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
 
-        await UserController.getAllUsers(req, res);
+    jest.spyOn(UserService, 'getUserByUsername').mockResolvedValue(null);
 
-        expect(res.json).toHaveBeenCalledWith({
-            error: CodeStatus.INVALID_DATA,
-            msg: "Upss there is an error..."
-        });
+    await UserController.userByUsername(req, res);
+
+    expect(UserService.getUserByUsername).toHaveBeenCalledWith(req.params.username);
+    expect(res.status).toHaveBeenCalledWith(CodeStatus.INVALID_DATA);
+  });
+
+
+
+
+  it('should handle error during getUserByUsername and return an error message', async () => {
+    const req = {
+      params: {
+        username: 'johndoe',
+      },
+    };
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    const error = new Error('Database connection failed');
+    jest.spyOn(UserService, 'getUserByUsername').mockRejectedValue(error);
+
+    await UserController.userByUsername(req, res);
+
+    expect(UserService.getUserByUsername).toHaveBeenCalledWith(req.params.username);
+    expect(res.status).toHaveBeenCalledWith(CodeStatus.INVALID_DATA);
+    expect(res.json).toHaveBeenCalledWith({
+      code: CodeStatus.INVALID_DATA,
+      msg: 'Upss there is an error...',
     });
-
-    it("should return user witch username given at getUserByUsername", async () => {
-        const req = {
-            params:{
-                username: 'J1000'
-            } 
-        };
-
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        };
-
-        const user = {
-            id: 1,
-            name: 'John Doe',
-            lastname: "Morales",
-            email: 'johndoe@example.com',
-            username: "J1000"
-        };
-
-        jest.spyOn(UserService, "getUserByUsername").mockResolvedValue(user);
-
-        await UserController.userByUsername(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(CodeStatus.OK);
-        expect(res.json).toHaveBeenCalledWith(user);
-    });
+  });
+});
 
 
-    it('should return an error message if the user is not found at getUserByUsername', async () => {
-        const req = {
-          params: {
-            username: 'johndoe'
-          }
-        };
-        const res = {
-          status: jest.fn().mockReturnThis(),
-          send: jest.fn()
-        };
-        jest.spyOn(UserService, 'getUserByUsername').mockResolvedValue(null);
-    
-        await UserController.userByUsername(req, res);
-    
-        expect(res.status).toHaveBeenCalledWith(CodeStatus.INVALID_DATA);
-        expect(res.send).toHaveBeenCalledWith({ message: 'User not found' });
-    });
+describe('validateNotEmptyData', () => {
+  it('should return OK when all fields are provided', () => {
+    const user = {
+      name: 'John',
+      lastname: 'Doe',
+      age: 25,
+      email: 'john@example.com',
+      username: 'johndoe',
+      password: 'password123'
+    };
 
+    const result = UserController.validateNotEmptyData(user);
 
-    it('should return an error message if there is an error at getUserByUsername', async () => {
-        const req = {
-          params: {
-            username: 'johndoe'
-          }
-        };
+    expect(result).toBe(CodeStatus.OK);
+  });
 
-        const res = {
-          json: jest.fn()
-        };
+  it('should return DATA_REQUIRED when a field is missing', () => {
+    const user = {
+      name: 'John',
+      lastname: 'Doe',
+      age: 25,
+      email: 'john@example.com',
+      username: 'johndoe'
+      //password is missing
+    };
 
-        const error = new Error('Database connection failed');
-        jest.spyOn(UserService, 'getUserByUsername').mockRejectedValue(error);
-    
-        await UserController.userByUsername(req, res);
-    
-        expect(res.json).toHaveBeenCalledWith({
-          error: CodeStatus.INVALID_DATA,
-          msg: "Upss there is an error..."
-        });
-      });
+    const result = UserController.validateNotEmptyData(user);
+
+    expect(result).toBe(CodeStatus.DATA_REQUIRED);
+  });
 
 });
+
+
+describe('deleteUser', () => {
+  it('should delete a user successfully', async () => {
+    const usernameToDelete = 'johndoe';
+
+    // Mock userService.findUserByUsername for returns an existan username
+    jest.spyOn(UserService, "findUserByUsername").mockResolvedValueOnce({ username: usernameToDelete });
+
+    // Mock userService.deleteUserByUsername for it does nothing
+    jest.spyOn(UserService, "deleteUserByUsername").mockResolvedValueOnce();
+
+    const req = {
+      params: {
+        username: usernameToDelete
+      }
+    };
+
+    const res = {
+      json: jest.fn()
+    };
+
+    await UserController.deleteUser(req, res);
+
+    expect(res.json).toHaveBeenCalledWith({
+      code: CodeStatus.OK,
+      msg: `User ${usernameToDelete} was eliminated...`
+    });
+  });
+
+  it('should return an error for non-existent user', async () => {
+    const usernameToDelete = 'nonexistentuser';
+
+    // Mock userService.findUserByUsername para que devuelva null
+    jest.spyOn(UserService, "findUserByUsername").mockResolvedValueOnce(null);
+
+    const req = {
+      params: {
+        username: usernameToDelete
+      }
+    };
+
+    const res = {
+      json: jest.fn()
+    };
+
+    await UserController.deleteUser(req, res);
+
+    expect(res.json).toHaveBeenCalledWith({
+      code: CodeStatus.INVALID_DATA,
+      msg: `User ${usernameToDelete} doesn't exist...`
+    });
+  });
+
+  it('should handle errors during deletion', async () => {
+    const usernameToDelete = 'johndoe';
+    const errorMessage = 'An error occurred during deletion';
+
+    // Mock userService.findUserByUsername to return an existant user.
+    jest.spyOn(UserService, "findUserByUsername").mockResolvedValueOnce({ username: usernameToDelete });
+
+    // Mock userService.deleteUserByUsername to it throws an error
+    jest.spyOn(UserService, "deleteUserByUsername").mockRejectedValueOnce(CodeStatus.PROCESS_ERROR);
+
+    const req = {
+      params: {
+        username: usernameToDelete
+      }
+    };
+
+    const res = {
+      json: jest.fn()
+    };
+
+    await UserController.deleteUser(req, res);
+
+    expect(res.json).toHaveBeenCalledWith({
+      code: CodeStatus.PROCESS_ERROR,
+      msg: 'There is an error while deleting the user...'
+    });
+  });
+});
+
+
+describe('validateDataTypesEntry', () => {
+  it('should return OK when all data types are valid', () => {
+    const user = {
+      name: 'John',
+      lastname: 'Doe',
+      age: 25,
+      username: 'johndoe',
+      email: 'john@example.com',
+      password: 'password123'
+    };
+
+    const result = UserController.validateDataTypesEntry(user);
+
+    expect(result).toBe(CodeStatus.OK);
+  });
+
+
+  it('should return DATA_REQUIRED when name is not a string', () => {
+    const user = {
+      name: 123,
+      lastname: 'Doe',
+      age: 25,
+      username: 'johndoe',
+      email: 'john@example.com',
+      password: 'password123'
+    };
+
+    const result = UserController.validateDataTypesEntry(user);
+
+    expect(result).toBe(CodeStatus.DATA_REQUIRED);
+  });
+});
+
+
+describe('validateUserNotRegistered', () => {
+  it('should return OK when user is not registered', async () => {
+    const user = {
+      username: 'johndoe',
+      email: 'john@example.com'
+    };
+
+    jest.spyOn(UserService, "findUserByEmail").mockResolvedValue(null);
+    jest.spyOn(UserService, "findUserByUsername").mockResolvedValue(null);
+
+    const result = await UserController.validateUserNotRegistered(user);
+
+    expect(result).toBe(CodeStatus.OK);
+    expect(UserService.findUserByEmail).toHaveBeenCalledWith(user.email);
+    expect(UserService.findUserByUsername).toHaveBeenCalledWith(user.username);
+  });
+
+
+  it('should return INVALID_DATA when user is already registered', async () => {
+    const user = {
+      username: 'johndoe',
+      email: 'john@example.com'
+    };
+
+    jest.spyOn(UserService, "findUserByEmail").mockResolvedValue({ email: user.email });
+    jest.spyOn(UserService, "findUserByUsername").mockResolvedValue({ username: user.username });
+
+    const result = await UserController.validateUserNotRegistered(user);
+
+    expect(result).toBe(CodeStatus.INVALID_DATA);
+    expect(UserService.findUserByEmail).toHaveBeenCalledWith(user.email);
+    expect(UserService.findUserByUsername).toHaveBeenCalledWith(user.username);
+  });
+
+});
+
