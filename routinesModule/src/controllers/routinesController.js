@@ -26,12 +26,63 @@ const getAllRoutines = async (req, res) => {
 }
 
 
+const getRoutinesCreatedByUser = async (req,res) => {
+    let codeResult = CodeStatus.PROCESS_ERROR;
+    let message = "User doesnt exit D:";
+
+    try{
+        const resultOperation = await RoutineService.getRoutinesCreatedByUser(req.params.username);
+
+        if(resultOperation === CodeStatus.PROCESS_ERROR){
+            message = "There is an error, verify and retry";
+
+        }else{
+            codeResult = CodeStatus.OK;
+            message = resultOperation;
+        }
+    }catch (error){
+        Logger.error(`Routine controller error: ${{error}}`);
+    }
+
+    return res.status(codeResult).json({
+        code:codeResult,
+        msg: message
+    });
+}
+
+
+const getRoutinesFollowedByUser = async (req,res) => {
+    let codeResult = CodeStatus.PROCESS_ERROR;
+    let message = "User doesnt exit D:";
+
+    try{
+        const resultOperation = await RoutineService.getRoutinesFollowedByUser(req.params.username);
+
+        if(resultOperation === CodeStatus.PROCESS_ERROR){
+            message = "There is an error, verify and retry";
+
+        }else{
+            codeResult = CodeStatus.OK;
+            message = resultOperation;
+        }
+    }catch (error){
+        Logger.error(`Routine controller error: ${{error}}`);
+    }
+
+    return res.status(codeResult).json({
+        code:codeResult,
+        msg: message
+    });
+}
+
 const addNewRoutine = async(req, res) => {
     let resultCode = CodeStatus.PROCESS_ERROR;
     let response = "New routine not added :("
 
     try{
-        const newRoutine = req.body
+        const username = req.body.username
+        const newRoutine = req.body.routine
+
 
         const validation = await Promise.all([
             validateRoutineNotEmpty(newRoutine),
@@ -44,7 +95,7 @@ const addNewRoutine = async(req, res) => {
             resultCode = CodeStatus.INVALID_DATA
             response = "Some data aren't valid, verify and retry :("
         } else {
-            await RoutineService.addNewRoutine(newRoutine)
+            await RoutineService.addNewRoutine(username, newRoutine)
             resultCode = CodeStatus.OK;
             response = "Routine added succesfully :D"
         }
@@ -59,6 +110,51 @@ const addNewRoutine = async(req, res) => {
     });
 }
 
+
+const followRoutine = async(req, res) => {
+    let resultCode = CodeStatus.PROCESS_ERROR
+    let response = "Routine not followed :("
+
+    try{
+        const username = req.params.username
+        const idRoutine = req.params.idRoutine
+
+        await RoutineService.followRoutine(username, idRoutine)
+        resultCode = CodeStatus.OK;
+        response = "Routine followed succesfully :D"
+    } catch (error) {
+        response = "An error has been ocurred while following a routine"
+        Logger.error(`Routine controller error: ${error}`)
+    }
+
+    return res.status(resultCode).json({
+        code: resultCode,
+        msg: response
+    });
+}
+
+
+const unfollowRoutine = async(req, res) => {
+    let resultCode = CodeStatus.PROCESS_ERROR
+    let response = "Routine not unfollowed :("
+
+    try{
+        const username = req.params.username
+        const idRoutine = req.params.idRoutine
+
+        await RoutineService.unfollowRoutine(username, idRoutine)
+        resultCode = CodeStatus.OK;
+        response = "Routine unfollowed succesfully :D"
+    } catch (error) {
+        response = "An error has been ocurred while unfollowing a routine"
+        Logger.error(`Routine controller error: ${error}`)
+    }
+
+    return res.status(resultCode).json({
+        code: resultCode,
+        msg: response
+    });
+}
 
 const valueRoutine = async (req, res) => {
     let resultCode = CodeStatus.PROCESS_ERROR
@@ -128,6 +224,26 @@ const editRoutine = async(req, res) => {
     });
 }
 
+
+const deleteRoutine = async(req, res) => {
+    let resultCode = CodeStatus.PROCESS_ERROR
+    let response = "Routine not deleted :("
+
+    try{
+        const idRoutine = req.params.id;
+        await RoutineService.deleteRoutine(idRoutine)
+        resultCode = CodeStatus.OK
+        response = "Routine deleted succesfully :)"
+    } catch (error) {
+        response = "An error was ocurred :("
+        Logger.error(`Routine controller error: ${error}`)
+    }
+
+    return res.status(resultCode).json({
+        code: resultCode,
+        msg: response
+    });
+}
 
 const getRoutineDetails = async(req, res) => {
     let resultCode = CodeStatus.ROUTINE_NOT_FOUND
@@ -231,23 +347,15 @@ const validateValoration = (idRoutine, valoration) =>{
 }
 
 
-const validateComment = (comment) => {
-    let resultValidation = CodeStatus.OK
-
-
-}
-
-
-const validateTasks = (task) => {
-    let resultValidation = CodeStatus.OK
-
-
-}
-
 module.exports = {
     getAllRoutines,
     valueRoutine,
     addNewRoutine,
     editRoutine,
-    getRoutineDetails
+    getRoutineDetails,
+    deleteRoutine,
+    getRoutinesCreatedByUser,
+    getRoutinesFollowedByUser,
+    followRoutine,
+    unfollowRoutine
 }

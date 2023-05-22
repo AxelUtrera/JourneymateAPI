@@ -86,7 +86,7 @@ const findUserByEmail = (emailToFind) => {
 }
 
 
-const editProfile = async (username, editedProfile) => {
+const editProfile = (username, editedProfile) => {
   return new Promise((resolve, reject) => {
     User.findOneAndUpdate({username: username}, editedProfile)
     .then(() => {
