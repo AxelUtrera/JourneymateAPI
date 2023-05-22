@@ -85,11 +85,26 @@ const findUserByEmail = (emailToFind) => {
   })
 }
 
+
+const editProfile = (username, editedProfile) => {
+  return new Promise((resolve, reject) => {
+    User.findOneAndUpdate({username: username}, editedProfile)
+    .then(() => {
+      resolve(CodeStatus.OK);
+    })
+    .catch((error) => {
+      reject(CodeStatus.PROCESS_ERROR);
+      Logger.error(`User service error: ${error}`)
+    });
+  });
+}
+
 module.exports = {
   getAllDataUsers,
   getUserByUsername,
   registerNewUser,
   deleteUserByUsername,
   findUserByUsername,
-  findUserByEmail
+  findUserByEmail,
+  editProfile
 }

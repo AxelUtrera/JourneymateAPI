@@ -83,6 +83,42 @@ const createNewUser = async (req, res) => {
     }
 }
 
+
+const editProfile = async (req, res) => {
+    let resultCode = CodeStatus.PROCESS_ERROR;
+    let response = "Profile not modified :("
+
+    try {
+        const username = req.body.username;
+        const editedProfile = req.body.profile_data;
+
+        const validation = await Promise.all([
+            validateEditProfileTypes(username, editedProfile),
+            validateEditProfileNotEmpty(username, editedProfile)
+        ]);
+
+        const validationErrors = validation.filter((status) => status !== CodeStatus.OK);
+
+        if (validationErrors.length > 0) {
+            resultCode = CodeStatus.INVALID_DATA
+            response = "Some data aren't valid, verify and retry :("
+        } else {
+            await userService.editProfile(username, editedProfile)
+            resultCode = CodeStatus.OK;
+            response = "Routine modified succesfully :D"
+        }
+    } catch (error) {
+        response = "An error has been ocurred while adding a new routine"
+        Logger.error(`Routine controller error: ${error}`)
+    }
+
+    return res.status(resultCode).json({
+        code: resultCode,
+        msg: response
+    });
+}
+
+
 const deleteUser = async (req, res) => {
     const usernameToDelete = req.params.username;
     try {
@@ -196,11 +232,106 @@ const validateUserNotRegistered = async (userToValidate) => {
     return resultValidation;
 }
 
+const validateEditProfileTypes = (username, editedProfile) => {
+    let resultValidation = CodeStatus.OK;
+
+    if (typeof username !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.name !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.lastname !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.phone_number !== "string" || !validatePhoneNumber(editedProfile.phone_number))
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.email !== "string" || !validateEmail(editedProfile.email))
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (!Number.isInteger(editedProfile.age))
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    const minimumAge = 14;
+    if (!(editedProfile.age >= minimumAge))
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.city !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.country !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.user_description !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    return resultValidation;
+}
+
+
+const validateEditProfileNotEmpty = (username, editedProfile) => {
+    let resultValidation = CodeStatus.OK;
+
+    if (username === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.name === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.lastname === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.phone_number === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.email === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.age === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.city === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.country === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.user_description === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    return resultValidation;
+}
+
+
+const validateEmail = (email) => {
+    let isValid = true;
+
+    var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    if (!mailFormat.test(email))
+        isValid = false;
+
+    return isValid;
+}
+
+
+const validatePhoneNumber = (phoneNumber) => {
+    let isValid = true;
+
+    var phoneFormat = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/
+
+    if (!phoneFormat.test(phoneNumber))
+        isValid = false;
+
+    return isValid;
+}
 
 module.exports = {
     getAllUsers,
     userByUsername,
     createNewUser,
+    editProfile,
     deleteUser,
     validateDataTypesEntry,
     validateNotEmptyData,
