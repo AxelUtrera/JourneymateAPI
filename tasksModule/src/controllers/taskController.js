@@ -5,7 +5,7 @@ const CodeStatus = require('../models/codeStatus');
 
 const getAllTasks = async (req,res) => {
     let resultCode = CodeStatus.PROCESS_ERROR;
-    let response = 'An error was ocurred';
+    let response = 'An error occurred';
     try{
         const tasksRecovered = await TaskService.getAllTasks();
         if(tasksRecovered != null){
@@ -13,7 +13,7 @@ const getAllTasks = async (req,res) => {
             response = tasksRecovered;
         }else{
             resultCode = CodeStatus.NOT_FOUND;
-            response = "Tasks no found"
+            response = "Tasks not found"
         }
     }catch (error){
         Logger.error(`Task controller error: ${error}`)
@@ -38,14 +38,13 @@ const getTaskById = async (req, res) => {
         }
     }catch(error){
         resultCode = CodeStatus.PROCESS_ERROR;
-        response = "An error was ocurred";
-        Logger.error(`Controller error: ${error}`)
+        Logger.error(`An error occurred in controller task: ${error}`)
     }
 
     return res.status(resultCode).json({
         code: resultCode,
         msg: response
-    });
+    });x
 }
 
 
@@ -120,11 +119,10 @@ const editTask = async (req, res) => {
 
 const getAllTasksByIdRoutine = async (req,res) => {
     let codeResult = CodeStatus.PROCESS_ERROR;
-    let message = "id routine not existstent...";
+    let message = "id routine doesn't exists...";
 
     try{
         const resultOperation = await TaskService.getTaskByIDRoutine(req.params.idRoutine);
-        console.log(resultOperation);
 
         if(resultOperation === CodeStatus.PROCESS_ERROR){
             message = "There is an error, verify and retry";
@@ -145,7 +143,7 @@ const getAllTasksByIdRoutine = async (req,res) => {
 
 const deleteTask = async (req, res) => {
     let codeResult = CodeStatus.PROCESS_ERROR;
-    let message = "an error ocurred while delete task";
+    let message = "An error ocurred while delete task";
 
     try{
         const result = await TaskService.deleteTask(req.params.idTask);
@@ -207,5 +205,7 @@ module.exports = {
     addNewTask,
     getAllTasksByIdRoutine,
     editTask,
-    deleteTask
+    deleteTask,
+    validateDataNotEmpty,
+    validateTypesOfDataEntry
 };
