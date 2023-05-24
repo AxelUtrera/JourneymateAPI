@@ -2,7 +2,6 @@ const userService = require('../services/userServices')
 const Logger = require('../config/logger');
 const CodeStatus = require('../models/codeStatus');
 
-
 const getAllUsers = async (req, res) => {
     try {
         const users = await userService.getAllDataUsers();
@@ -42,11 +41,35 @@ const userByUsername = async (req, res) => {
     });
 }
 
+const login = async (req, res) => {
+    let codeResult = CodeStatus.PROCESS_ERROR;
+    let messageResult = 'There is an error at sign in';
+    const username = req.body.username;
+    const pwd = req.body.password;
+    
+    try{
+        const resultService = await userService.login(username, pwd);
+        if(resultService){
+            codeResult = CodeStatus.OK,
+            messageResult = `Welcome ${username}`;
+        }else{
+            codeResult = CodeStatus.USER_NOT_FOUND,
+            messageResult = `User or password are incorrects`;
+        }
+    }catch(error){
+        Logger.error(`Login error: ${error}`)
+    }
+
+    return res.status(codeResult).json({
+        code: codeResult,
+        msg : messageResult
+    });
+}
+
 
 const createNewUser = async (req, res) => {
     try {
         const user = req.body;
-
         const validations = await Promise.all([
             validateNotEmptyData(user),
             validateUserNotRegistered(user),
@@ -105,7 +128,7 @@ const editProfile = async (req, res) => {
         } else {
             await userService.editProfile(username, editedProfile)
             resultCode = CodeStatus.OK;
-            response = "Routine modified succesfully :D"
+            response = "user modified succesfully :D"
         }
     } catch (error) {
         response = "An error has been ocurred while adding a new routine"
@@ -328,6 +351,7 @@ const validatePhoneNumber = (phoneNumber) => {
 }
 
 module.exports = {
+    login,
     getAllUsers,
     userByUsername,
     createNewUser,

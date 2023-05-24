@@ -4,7 +4,7 @@ const {getAllTasks, getTaskById, addNewTask, getAllTasksByIdRoutine, editTask, d
 const router = Router();
 
 router.get('/', getAllTasks);
-router.get('/task/:taskId', getTaskById);
+router.get('/taskById/:taskId', getTaskById);
 router.get('/routine/:idRoutine', getAllTasksByIdRoutine);
 router.post('/', addNewTask);
 router.put('/:idTask', editTask);

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "SDhsnuUXL/aAXDRVhj/uPA3GF4TEyfbHidkUuhbMibc=",
+  "Source": "journeymateAPIGateway",
+  "BasePath": "_content/journeymateAPIGateway",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
