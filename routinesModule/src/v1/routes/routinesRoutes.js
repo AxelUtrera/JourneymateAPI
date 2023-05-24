@@ -4,14 +4,14 @@ const { getAllRoutines, valueRoutine, addNewRoutine, editRoutine, getRoutineDeta
 const router = Router();
 
 router.get('/', getAllRoutines)
-router.post('/valueRoutine', valueRoutine)
+router.post('/valueRoutine', valueRoutine)//quitar metodo.
 router.post('/addNewRoutine', addNewRoutine)
 router.put('/editRoutine', editRoutine)
-router.get('/routineDetails', getRoutineDetails )
-router.delete('/deleteRoutine/:id', deleteRoutine)
+router.get('/routineDetails', getRoutineDetails )//falta corregir.
+router.delete('/deleteRoutine/:id', deleteRoutine)//falta eliminar en cascada.
 router.get('/getRoutinesCreatedByUser/:username', getRoutinesCreatedByUser)
 router.get('/getRoutinesFollowedByUser/:username', getRoutinesFollowedByUser)
-router.post('/followRoutine/:username/:idRoutine', followRoutine)
-router.post('/unfollowRoutine/:username/:idRoutine', unfollowRoutine)
+router.post('/followRoutine/:username/:idRoutine', followRoutine)//mandar datos por json.
+router.post('/unfollowRoutine/:username/:idRoutine', unfollowRoutine)//lo mismo
 
 module.exports = router
