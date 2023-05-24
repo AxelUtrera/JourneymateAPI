@@ -1,8 +1,6 @@
-const { response } = require('express');
 const userService = require('../services/userServices')
 const Logger = require('../config/logger');
 const CodeStatus = require('../models/codeStatus');
-
 
 const getAllUsers = async (req, res) => {
     try {
@@ -43,11 +41,35 @@ const userByUsername = async (req, res) => {
     });
 }
 
+const login = async (req, res) => {
+    let codeResult = CodeStatus.PROCESS_ERROR;
+    let messageResult = 'There is an error at sign in';
+    const username = req.body.username;
+    const pwd = req.body.password;
+    
+    try{
+        const resultService = await userService.login(username, pwd);
+        if(resultService){
+            codeResult = CodeStatus.OK,
+            messageResult = `Welcome ${username}`;
+        }else{
+            codeResult = CodeStatus.USER_NOT_FOUND,
+            messageResult = `User or password are incorrects`;
+        }
+    }catch(error){
+        Logger.error(`Login error: ${error}`)
+    }
+
+    return res.status(codeResult).json({
+        code: codeResult,
+        msg : messageResult
+    });
+}
+
 
 const createNewUser = async (req, res) => {
     try {
         const user = req.body;
-
         const validations = await Promise.all([
             validateNotEmptyData(user),
             validateUserNotRegistered(user),
@@ -106,7 +128,7 @@ const editProfile = async (req, res) => {
         } else {
             await userService.editProfile(username, editedProfile)
             resultCode = CodeStatus.OK;
-            response = "Routine modified succesfully :D"
+            response = "user modified succesfully :D"
         }
     } catch (error) {
         response = "An error has been ocurred while adding a new routine"
@@ -128,28 +150,21 @@ const deleteUser = async (req, res) => {
             await userService.deleteUserByUsername(usernameToDelete);
             res.json({
                 code: CodeStatus.OK,
-                msg: `User ${usernameToDelete} was eliminated... `
+                msg: `User ${usernameToDelete} was eliminated...`
             });
         } else {
             res.json({
                 code: CodeStatus.INVALID_DATA,
-                msg: `User ${usernameToDelete} doesn't exists...`
+                msg: `User ${usernameToDelete} doesn't exist...`
             });
         }
     } catch (error) {
         res.json({
             code: error,
-            msg: "There is an error while "
+            msg: "There is an error while deleting the user..."
         });
         Logger.error(`Controller error: ${error}`);
     }
-}
-
-
-const usuariosPatch = (req, res) => {
-    res.json({
-        msg: "Patch desde la api"
-    });
 }
 
 
@@ -184,6 +199,7 @@ const validateNotEmptyData = (userToValidate) => {
 
     return resultValidation;
 }
+
 
 const validateDataTypesEntry = (userToValidate) => {
     let resultValidation = CodeStatus.OK;
@@ -222,19 +238,22 @@ const validateDataTypesEntry = (userToValidate) => {
     return resultValidation;
 }
 
+
 const validateUserNotRegistered = async (userToValidate) => {
     let resultValidation = CodeStatus.INVALID_DATA;
-   
+    try {
         const resultValidationEmail = await userService.findUserByEmail(userToValidate.email);
         const resultValidationUsername = await userService.findUserByUsername(userToValidate.username);
 
         if (resultValidationEmail === null && resultValidationUsername === null) {
             resultValidation = CodeStatus.OK;
         }
-    
+    } catch (error) {
+        Logger.error(`there is an error at validateUserNotRegistered: ${error}`);
+    }
+
     return resultValidation;
 }
-
 
 const validateEditProfileTypes = (username, editedProfile) => {
     let resultValidation = CodeStatus.OK;
@@ -332,10 +351,13 @@ const validatePhoneNumber = (phoneNumber) => {
 }
 
 module.exports = {
+    login,
     getAllUsers,
     userByUsername,
     createNewUser,
     editProfile,
     deleteUser,
-    usuariosPatch
+    validateDataTypesEntry,
+    validateNotEmptyData,
+    validateUserNotRegistered
 };

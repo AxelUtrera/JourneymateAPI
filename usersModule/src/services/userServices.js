@@ -99,6 +99,20 @@ const editProfile = (username, editedProfile) => {
   });
 }
 
+
+const login = (username, password) => {
+  return new Promise((resolve, reject) => { 
+    User.findOne({username: username, password: password})
+    .then((userFound) => { 
+        resolve(userFound);
+    })
+    .catch((error) => {
+      reject(CodeStatus.PROCESS_ERROR);
+      Logger.error(`Login error: ${error}`);
+    })
+  });
+}
+
 module.exports = {
   getAllDataUsers,
   getUserByUsername,
@@ -106,5 +120,6 @@ module.exports = {
   deleteUserByUsername,
   findUserByUsername,
   findUserByEmail,
-  editProfile
+  editProfile,
+  login
 }
