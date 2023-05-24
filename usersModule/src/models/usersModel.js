@@ -33,9 +33,8 @@ const userSchema = new mongoose.Schema(
             required : true
         },
 
-        phoneNumber: { 
-            type: String, 
-            default: "" 
+        phone_number: { 
+            type: String
         },
 
         city: { 
@@ -48,7 +47,7 @@ const userSchema = new mongoose.Schema(
             default: "México" 
         },
 
-        userDescription: {
+        user_description: {
             type: String,
             default: function () {
                 return `Hi there, I'm ${this.name}`;
