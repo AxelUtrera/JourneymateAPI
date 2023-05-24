@@ -22,7 +22,7 @@ const routineSchema = new mongoose.Schema(
         ],
         tasks: [
             {
-                task: Number,
+                task: String,
                 default: []
             }
         ],

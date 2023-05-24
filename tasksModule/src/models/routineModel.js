@@ -25,6 +25,7 @@ const routineSchema = new mongoose.Schema(
             {
                 task: {
                     type: String,
+                    default:[],
                     _id: false
                 },
                 _id:false

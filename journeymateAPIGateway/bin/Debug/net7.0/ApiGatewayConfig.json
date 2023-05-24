@@ -55,6 +55,84 @@
             ],
             "DownstreamPathTemplate": "/api/{version}/routines/"
         },
+        {
+            "UpstreamPathTemplate": "/api/{version}/routines/",
+            "UpstreamHttpMethod" : ["POST"],
+            "UpstreamScheme" : "http",
+            "DownstreamScheme" : "http",
+            "DownstreamHostAndPorts" :[
+                {
+                    "Host": "localhost",
+                    "Port": 9012
+                }
+            ],
+            "DownstreamPathTemplate": "/api/{version}/routines/addNewRoutine/"
+        },
+        {
+            "UpstreamPathTemplate": "/api/{version}/routines/",
+            "UpstreamHttpMethod" : ["PUT"],
+            "UpstreamScheme" : "http",
+            "DownstreamScheme" : "http",
+            "DownstreamHostAndPorts" :[
+                {
+                    "Host": "localhost",
+                    "Port": 9012
+                }
+            ],
+            "DownstreamPathTemplate": "/api/{version}/routines/editRoutine/"
+        },
+        {
+            "UpstreamPathTemplate": "/api/{version}/routines/{id}",
+            "UpstreamHttpMethod" : ["DELETE"],
+            "UpstreamScheme" : "http",
+            "DownstreamScheme" : "http",
+            "DownstreamHostAndPorts" :[
+                {
+                    "Host": "localhost",
+                    "Port": 9012
+                }
+            ],
+            "DownstreamPathTemplate": "/api/{version}/routines/deleteRoutine/{id}"
+        },
+        {
+            "UpstreamPathTemplate": "/api/{version}/routines/routinesByUser/{username}",
+            "UpstreamHttpMethod" : ["GET"],
+            "UpstreamScheme" : "http",
+            "DownstreamScheme" : "http",
+            "DownstreamHostAndPorts" :[
+                {
+                    "Host": "localhost",
+                    "Port": 9012
+                }
+            ],
+            "DownstreamPathTemplate": "/api/{version}/routines/getRoutinesCreatedByUser/{username}"
+        },
+        {
+            "UpstreamPathTemplate": "/api/{version}/routines/routinesFollowed/{username}",
+            "UpstreamHttpMethod" : ["GET"],
+            "UpstreamScheme" : "http",
+            "DownstreamScheme" : "http",
+            "DownstreamHostAndPorts" :[
+                {
+                    "Host": "localhost",
+                    "Port": 9012
+                }
+            ],
+            "DownstreamPathTemplate": "/api/{version}/routines/getRoutinesFollowedByUser/{username}"
+        },
+        {
+            "UpstreamPathTemplate": "/api/{version}/routines/followRoutine/{username}/{idRoutine}",
+            "UpstreamHttpMethod" : ["POST"],
+            "UpstreamScheme" : "http",
+            "DownstreamScheme" : "http",
+            "DownstreamHostAndPorts" :[
+                {
+                    "Host": "localhost",
+                    "Port": 9012
+                }
+            ],
+            "DownstreamPathTemplate": "/api/{version}/routines/followRoutine/{username}/{idRoutine}"
+        },
 
 
         {
