@@ -8,7 +8,7 @@ const valueRoutine = async (req, res) => {
     let response = "Routine not valorated :("
 
     try{
-        const idRoutine = req.body.idRoutine;
+        const idRoutine = req.body.id;
         const valoration = req.body.valoration;
 
         const validations = await Promise.all([

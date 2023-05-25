@@ -116,8 +116,8 @@ const followRoutine = async(req, res) => {
     let response = "Routine not followed :("
 
     try{
-        const username = req.params.username
-        const idRoutine = req.params.idRoutine
+        const username = req.body.username
+        const idRoutine = req.body.idRoutine
 
         await RoutineService.followRoutine(username, idRoutine)
         resultCode = CodeStatus.OK;
@@ -139,47 +139,14 @@ const unfollowRoutine = async(req, res) => {
     let response = "Routine not unfollowed :("
 
     try{
-        const username = req.params.username
-        const idRoutine = req.params.idRoutine
+        const username = req.body.username
+        const idRoutine = req.body.idRoutine
 
         await RoutineService.unfollowRoutine(username, idRoutine)
         resultCode = CodeStatus.OK;
         response = "Routine unfollowed succesfully :D"
     } catch (error) {
         response = "An error has been ocurred while unfollowing a routine"
-        Logger.error(`Routine controller error: ${error}`)
-    }
-
-    return res.status(resultCode).json({
-        code: resultCode,
-        msg: response
-    });
-}
-
-const valueRoutine = async (req, res) => {
-    let resultCode = CodeStatus.PROCESS_ERROR
-    let response = "Routine not valorated :("
-
-    try{
-        const idRoutine = req.body.idRoutine;
-        const valoration = req.body.valoration;
-
-        const validations = await Promise.all([
-            validateValoration(idRoutine, valoration)
-        ]);
-
-        const validationErrors = validations.filter((status) => status !== CodeStatus.OK);
-
-        if(validationErrors > 0){
-            resultCode = CodeStatus.INVALID_DATA
-            response = "Some data aren't valid, verify and retry :("
-        } else {
-            await RoutineService.valueRoutine(idRoutine, valoration);
-            resultCode = CodeStatus.OK;
-            response = "Routine valorated succesfully :D"
-        }
-    } catch (error) {
-        response = "An error was ocurred :'("
         Logger.error(`Routine controller error: ${error}`)
     }
 
@@ -250,7 +217,7 @@ const getRoutineDetails = async(req, res) => {
     let response = "Routine not found :("
 
     try{
-        const idRoutine = req.body.idRoutine;
+        const idRoutine = req.params.idRoutine;
         const routineDetails = await RoutineService.getRoutineByID(idRoutine);
         if(routineDetails != null){
             resultCode = CodeStatus.OK
@@ -349,7 +316,6 @@ const validateValoration = (idRoutine, valoration) =>{
 
 module.exports = {
     getAllRoutines,
-    valueRoutine,
     addNewRoutine,
     editRoutine,
     getRoutineDetails,

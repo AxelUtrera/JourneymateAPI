@@ -13,33 +13,50 @@ const routineSchema = new mongoose.Schema(
         label_category: String,
         state_country: String,
         town: String,
-        valorations: [
-            {
-                user: {
-                    type: String,
-                    ref: "user"
-                },
-                valoration: Number
-            }
-        ],
-        tasks: [
-            {
-                task: {
-                    type: String,
-                    ref: "task"
+        valorations: {
+            type: [
+                {
+                    user: {
+                        type: String
+                    },
+                    valoration: {
+                        type: Number
+                    },
+                    _id: false
                 }
-            }
-        ],
-        routine_comments: [
-            {
-                comment_creator: {
-                    type: String,
-                    ref: "user"
-                },
-                date_creation: Date,
-                comment_description: String
-            }
-        ]
+            ],
+            default: []
+        },
+        tasks: {
+            type: [
+                {
+                    task: {
+                        type: String,
+                        
+                    },
+                    _id: false
+                }
+            ],
+            default: []
+            
+        },
+        routine_comments: {
+            type: [
+                {
+                    comment_creator: {
+                        type: String
+                    },
+                    date_creation: {
+                        type: Date
+                    },
+                    comment_description: {
+                        type: String
+                    },
+                    _id: false
+                }
+            ],
+            default: []
+        }
     }
 );
 
