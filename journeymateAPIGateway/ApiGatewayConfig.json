@@ -203,7 +203,7 @@
 
 
         {
-            "UpstreamPathTemplate": "/api/{version}/valueRoutine/",
+            "UpstreamPathTemplate": "/api/{version}/valueRoutine",
             "UpstreamHttpMethod" : ["POST"],
             "UpstreamScheme" : "http",
             "DownstreamScheme" : "http",
@@ -213,10 +213,10 @@
                     "Port": 9014
                 }
             ],
-            "DownstreamPathTemplate": "/api/{version}/reviews/valueRoutine/"
+            "DownstreamPathTemplate": "/api/{version}/reviews/valueRoutine"
         },
         {
-            "UpstreamPathTemplate": "/api/{version}/commentRoutine/",
+            "UpstreamPathTemplate": "/api/{version}/commentRoutine",
             "UpstreamHttpMethod" : ["POST"],
             "UpstreamScheme" : "http",
             "DownstreamScheme" : "http",
@@ -226,10 +226,10 @@
                     "Port": 9014
                 }
             ],
-            "DownstreamPathTemplate": "/api/{version}/reviews/commentRoutine/"
+            "DownstreamPathTemplate": "/api/{version}/reviews/commentRoutine"
         },
         {
-            "UpstreamPathTemplate": "/api/{version}/valueTask/",
+            "UpstreamPathTemplate": "/api/{version}/valueTask",
             "UpstreamHttpMethod" : ["POST"],
             "UpstreamScheme" : "http",
             "DownstreamScheme" : "http",
@@ -239,10 +239,10 @@
                     "Port": 9014
                 }
             ],
-            "DownstreamPathTemplate": "/api/{version}/reviews/valueTask/"
+            "DownstreamPathTemplate": "/api/{version}/reviews/valueTask"
         },
         {
-            "UpstreamPathTemplate": "/api/{version}/commentTask/",
+            "UpstreamPathTemplate": "/api/{version}/commentTask",
             "UpstreamHttpMethod" : ["POST"],
             "UpstreamScheme" : "http",
             "DownstreamScheme" : "http",
@@ -252,7 +252,7 @@
                     "Port": 9014
                 }
             ],
-            "DownstreamPathTemplate": "/api/{version}/reviews/commentTask/"
+            "DownstreamPathTemplate": "/api/{version}/reviews/commentTask"
         }
         
     ],

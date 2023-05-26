@@ -100,9 +100,9 @@ const editProfile = (username, editedProfile) => {
 }
 
 
-const login = (username, password) => {
+const login = (email, password) => {
   return new Promise((resolve, reject) => { 
-    User.findOne({username: username, password: password})
+    User.findOne({email: email, password: password})
     .then((userFound) => { 
         resolve(userFound);
     })

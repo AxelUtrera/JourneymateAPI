@@ -44,14 +44,14 @@ const userByUsername = async (req, res) => {
 const login = async (req, res) => {
     let codeResult = CodeStatus.PROCESS_ERROR;
     let messageResult = 'There is an error at sign in';
-    const username = req.body.username;
+    const email = req.body.email;
     const pwd = req.body.password;
     
     try{
-        const resultService = await userService.login(username, pwd);
+        const resultService = await userService.login(email, pwd);
         if(resultService){
             codeResult = CodeStatus.OK,
-            messageResult = `Welcome ${username}`;
+            messageResult = `Se ha iniciado sesion con : ${email}`;
         }else{
             codeResult = CodeStatus.USER_NOT_FOUND,
             messageResult = `User or password are incorrects`;
