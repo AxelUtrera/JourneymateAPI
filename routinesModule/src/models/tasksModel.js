@@ -50,7 +50,8 @@ const taskSchema = new mongoose.Schema(
                         min: 1,
                         max: 5,
                         description: "Must be an integer number from 1 to 5"
-                    }
+                    },
+                    _id:false
                 }
             ],
             default: []
@@ -71,7 +72,8 @@ const taskSchema = new mongoose.Schema(
                     comment_description: {
                         type: String,
                         description: "Must be a string"
-                    }
+                    },
+                    _id:false
                 },
             ],
             default: []

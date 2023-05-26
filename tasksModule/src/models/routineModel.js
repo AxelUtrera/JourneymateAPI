@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const routineSchema = new mongoose.Schema(
     {
         id: mongoose.Schema.Types.ObjectId,
+        idRoutine: Number,
         name: String,
         city: String,
         country: String,
@@ -12,35 +13,50 @@ const routineSchema = new mongoose.Schema(
         label_category: String,
         state_country: String,
         town: String,
-        valorations: [
-            {
-                user: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "user"
-                },
-                valoration: Number
-            }
-        ],
-        tasks: [
-            {
-                task: {
-                    type: String,
-                    default:[],
+        valorations: {
+            type: [
+                {
+                    user: {
+                        type: String
+                    },
+                    valoration: {
+                        type: Number
+                    },
                     _id: false
-                },
-                _id:false
-            }
-        ],
-        routine_comments: [
-            {
-                comment_creator: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "user"
-                },
-                date_creation: Date,
-                comment_description: String
-            }
-        ]
+                }
+            ],
+            default: []
+        },
+        tasks: {
+            type: [
+                {
+                    task: {
+                        type: String,
+                        
+                    },
+                    _id: false
+                }
+            ],
+            default: []
+            
+        },
+        routine_comments: {
+            type: [
+                {
+                    comment_creator: {
+                        type: String
+                    },
+                    date_creation: {
+                        type: Date
+                    },
+                    comment_description: {
+                        type: String
+                    },
+                    _id: false
+                }
+            ],
+            default: []
+        }
     }
 );
 
