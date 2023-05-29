@@ -51,7 +51,7 @@ const login = async (req, res) => {
         const resultService = await userService.login(email, pwd);
         if(resultService){
             codeResult = CodeStatus.OK,
-            messageResult = `Se ha iniciado sesion con : ${email}`;
+            messageResult = resultService;
         }else{
             codeResult = CodeStatus.USER_NOT_FOUND,
             messageResult = `User or password are incorrects`;
