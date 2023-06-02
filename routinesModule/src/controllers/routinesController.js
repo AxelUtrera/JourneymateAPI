@@ -80,7 +80,7 @@ const addNewRoutine = async(req, res) => {
     let response = "New routine not added :("
 
     try{
-        const username = req.body.creator_routine
+        const username = req.body.routine_creator
         const newRoutine = req.body
 
 
