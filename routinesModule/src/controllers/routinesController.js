@@ -80,8 +80,8 @@ const addNewRoutine = async(req, res) => {
     let response = "New routine not added :("
 
     try{
-        const username = req.body.username
-        const newRoutine = req.body.routine
+        const username = req.body.creator_routine
+        const newRoutine = req.body
 
 
         const validation = await Promise.all([
@@ -212,6 +212,7 @@ const deleteRoutine = async(req, res) => {
     });
 }
 
+
 const getRoutineDetails = async(req, res) => {
     let resultCode = CodeStatus.ROUTINE_NOT_FOUND
     let response = "Routine not found :("
@@ -263,6 +264,9 @@ const validateRoutine = (dataEntry) =>{
     if(typeof dataEntry.town !== "string")
         resultValidation = CodeStatus.DATA_REQUIRED
 
+    if(typeof dataEntry.routine_creator !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED
+
     return resultValidation;
 }
 
@@ -292,6 +296,9 @@ const validateRoutineNotEmpty = (dataEntry) => {
         resultValidation = CodeStatus.DATA_REQUIRED
 
     if(dataEntry.town === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED
+
+    if(dataEntry.routine_creator === undefined)
         resultValidation = CodeStatus.DATA_REQUIRED
 
     return resultValidation;

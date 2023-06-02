@@ -6,6 +6,7 @@ const routineSchema = new mongoose.Schema(
         id: mongoose.Schema.Types.ObjectId,
         idRoutine: Number,
         name: String,
+        routine_creator: String,
         city: String,
         country: String,
         routine_description: String,
