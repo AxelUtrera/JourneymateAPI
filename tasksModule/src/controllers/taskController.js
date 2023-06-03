@@ -5,15 +5,18 @@ const CodeStatus = require('../models/codeStatus');
 
 const getAllTasks = async (req,res) => {
     let resultCode = CodeStatus.PROCESS_ERROR;
-    let response = 'An error was ocurred';
+    let responseMessage = 'An error was ocurred';
+    let response = null;
+
     try{
         const tasksRecovered = await TaskService.getAllTasks();
         if(tasksRecovered != null){
             resultCode = CodeStatus.OK;
+            responseMessage = "Those are all tasks"
             response = tasksRecovered;
         }else{
             resultCode = CodeStatus.NOT_FOUND;
-            response = "Tasks no found"
+            responseMessage = "Tasks no found"
         }
     }catch (error){
         Logger.error(`Task controller error: ${error}`)
@@ -21,37 +24,44 @@ const getAllTasks = async (req,res) => {
 
     return res.status(resultCode).json({
         code: resultCode,
-        msg: response
+        msg: responseMessage,
+        response
     });
 }
 
 
 const getTaskById = async (req, res) => {
     let resultCode = CodeStatus.NOT_FOUND;
-    let response = 'Task not found';
+    let responseMessage = 'Task not found';
+    let response = null;
 
     try{
         const taskRecovered = await TaskService.getTaskByID(req.params.taskId);
-        if(taskRecovered != null){
+        if(taskRecovered != null && taskRecovered != CodeStatus.NOT_FOUND){
             resultCode = CodeStatus.OK;
+            responseMessage = "This is your task";
             response = taskRecovered;
+        }else{
+            resultCode = CodeStatus.NOT_FOUND;
+            responseMessage = "Task not found";
         }
     }catch(error){
         resultCode = CodeStatus.PROCESS_ERROR;
-        response = "An error was ocurred";
+        responseMessage = "An error was ocurred";
         Logger.error(`Controller error: ${error}`)
     }
 
     return res.status(resultCode).json({
         code: resultCode,
-        msg: response
+        msg: responseMessage,
+        response
     });
 }
 
 
 const addNewTask = async (req,res) => {
     let resultCode = CodeStatus.PROCESS_ERROR;
-    let response = "There is an error while add new task.."
+    let responseMessage = "There is an error while add new task.."
 
     try{
         const task = req.body;
@@ -65,22 +75,22 @@ const addNewTask = async (req,res) => {
 
         if(validationErrors.length > 0){
             resultCode = CodeStatus.INVALID_DATA;
-            response = "Some data aren't valid, verify and retry...";
+            responseMessage = "Some data aren't valid, verify and retry...";
         }else{
             const result = await TaskService.addNewTask(task.idRoutine, task);
             if(result !== CodeStatus.PROCESS_ERROR){
                 resultCode = CodeStatus.OK;
-                response = "Task successful added";
+                responseMessage = "Task successful added";
             }
         }
     }catch(error){
-        response = "An error was ocurred...";
+        responseMessage = "An error was ocurred...";
         Logger.error(`Task controller error: ${error}`)
     }
 
     return res.status(resultCode).json({
         code: resultCode,
-        msg: response
+        msg: responseMessage,
     });
 }
 
@@ -88,6 +98,7 @@ const addNewTask = async (req,res) => {
 const editTask = async (req, res) => {
     let codeResult = CodeStatus.PROCESS_ERROR;
     let message = "There is an error";
+
     try{
         const dataToUpdate = req.body;
 
@@ -121,17 +132,18 @@ const editTask = async (req, res) => {
 const getAllTasksByIdRoutine = async (req,res) => {
     let codeResult = CodeStatus.PROCESS_ERROR;
     let message = "id routine not existstent...";
+    let response = null;
 
     try{
         const resultOperation = await TaskService.getTaskByIDRoutine(req.params.idRoutine);
-        console.log(resultOperation);
 
         if(resultOperation === CodeStatus.PROCESS_ERROR){
             message = "There is an error, verify and retry";
 
         }else{
             codeResult = CodeStatus.OK;
-            message = resultOperation;
+            message = "Those are your tasks"
+            response = resultOperation;
         }
     }catch (error){
         Logger.error(`Controller error: ${{error}}`);
@@ -139,7 +151,8 @@ const getAllTasksByIdRoutine = async (req,res) => {
 
     return res.status(codeResult).json({
         code:codeResult,
-        msg: message
+        msg: message,
+        response
     });
 }
 

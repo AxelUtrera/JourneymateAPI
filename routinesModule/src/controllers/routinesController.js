@@ -15,7 +15,7 @@ const getAllRoutines = async (req, res) => {
             response = routinesRecovered;
         } else {
             resultCode = CodeStatus.ROUTINE_NOT_FOUND;
-            response = "Routines not found";
+            responseMessage = "Routines not found";
         }
     } catch(error){
         Logger.error(`Routine controller error: ${error}`)
