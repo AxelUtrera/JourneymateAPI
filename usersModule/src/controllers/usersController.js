@@ -89,12 +89,12 @@ const createNewUser = async (req, res) => {
 
         if (validationErrors.length > 0) {
             if (validateUserNotRegistered(user) !== CodeStatus.OK) {
-                res.json({
+                res.status(CodeStatus.CONFLICT).json({
                     code: CodeStatus.CONFLICT,
                     msg: "Username or email was previusly registered..."
                 });
             } else {
-                res.json({
+                res.status(CodeStatus.INVALID_DATA).json({
                     code: validationErrors[0],
                     msg: "There is an error with data entry, please retry..."
                 });
@@ -107,7 +107,7 @@ const createNewUser = async (req, res) => {
             });
         }
     } catch (error) {
-        res.json({
+        res.status(CodeStatus.PROCESS_ERROR).json({
             code: error,
             msg: "Upss we have problems, please retry... "
         });
