@@ -128,16 +128,6 @@ const unfollowRoutine = async(username, idRoutine) => {
     });
 }
 
-// const deleteRoutine = async(idRoutine) => {
-//     let resultCode = CodeStatus.PROCESS_ERROR
-//     try{
-//         await deleteTasksByIDRoutine(idRoutine)
-//     } catch (error) {
-//         Logger.error(`Routine service error: ${error}`)    
-//     }
-
-//     return resultCode
-// }
 
 const deleteRoutine = async(idRoutine) => {
     return new Promise((resolve, reject) => {
@@ -195,7 +185,6 @@ const getRoutinesCreatedByUser = async (usern) => {
 
     try {
         const user = await User.findOne({"username": usern});
-        console.log(user)
         const userRoutineLists = user.routines_created;
         const idsRoutinesOfUser = userRoutineLists.map((routinesOnList) => new Types.ObjectId(routinesOnList.routine));
 

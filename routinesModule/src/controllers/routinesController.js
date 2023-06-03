@@ -4,12 +4,14 @@ const CodeStatus = require('../models/codeStatus');
 
 const getAllRoutines = async (req, res) => {
     let resultCode = CodeStatus.PROCESS_ERROR;
-    let response = 'An error was ocurred :(';
+    let responseMessage = 'An error was ocurred :(';
+    let response = [];
 
     try{
         const routinesRecovered = await RoutineService.getAllRoutines();
         if(routinesRecovered != null){
             resultCode = CodeStatus.OK;
+            responseMessage = "Routines found"
             response = routinesRecovered;
         } else {
             resultCode = CodeStatus.ROUTINE_NOT_FOUND;
@@ -21,14 +23,16 @@ const getAllRoutines = async (req, res) => {
 
     return res.status(resultCode).json({
         code: resultCode,
-        msg: response
+        msg: responseMessage,
+        response
     });
 }
 
 
 const getRoutinesCreatedByUser = async (req,res) => {
     let codeResult = CodeStatus.PROCESS_ERROR;
-    let message = "User doesnt exit D:";
+    let responseMessage = "User doesnt exit D:";
+    let response = [];
 
     try{
         const resultOperation = await RoutineService.getRoutinesCreatedByUser(req.params.username);
@@ -38,7 +42,8 @@ const getRoutinesCreatedByUser = async (req,res) => {
 
         }else{
             codeResult = CodeStatus.OK;
-            message = resultOperation;
+            responseMessage = "Routines obtained"
+            response = resultOperation;
         }
     }catch (error){
         Logger.error(`Routine controller error: ${{error}}`);
@@ -46,7 +51,8 @@ const getRoutinesCreatedByUser = async (req,res) => {
 
     return res.status(codeResult).json({
         code:codeResult,
-        msg: message
+        msg: responseMessage,
+        response
     });
 }
 
@@ -54,6 +60,7 @@ const getRoutinesCreatedByUser = async (req,res) => {
 const getRoutinesFollowedByUser = async (req,res) => {
     let codeResult = CodeStatus.PROCESS_ERROR;
     let message = "User doesnt exit D:";
+    let response = [];
 
     try{
         const resultOperation = await RoutineService.getRoutinesFollowedByUser(req.params.username);
@@ -63,7 +70,8 @@ const getRoutinesFollowedByUser = async (req,res) => {
 
         }else{
             codeResult = CodeStatus.OK;
-            message = resultOperation;
+            message = "Routines found";
+            response = resultOperation;
         }
     }catch (error){
         Logger.error(`Routine controller error: ${{error}}`);
@@ -71,7 +79,8 @@ const getRoutinesFollowedByUser = async (req,res) => {
 
     return res.status(codeResult).json({
         code:codeResult,
-        msg: message
+        msg: message,
+        response
     });
 }
 
@@ -215,13 +224,15 @@ const deleteRoutine = async(req, res) => {
 
 const getRoutineDetails = async(req, res) => {
     let resultCode = CodeStatus.ROUTINE_NOT_FOUND
-    let response = "Routine not found :("
+    let responseMessage = "Routine not found :("
+    let response = null;
 
     try{
         const idRoutine = req.params.idRoutine;
         const routineDetails = await RoutineService.getRoutineByID(idRoutine);
         if(routineDetails != null){
             resultCode = CodeStatus.OK
+            responseMessage = "Routine found"
             response = routineDetails
         }
     } catch (error) {
@@ -232,7 +243,8 @@ const getRoutineDetails = async(req, res) => {
 
     return res.status(resultCode).json({
         code: resultCode,
-        msg: response
+        msg: responseMessage,
+        response
     });
 }
 
