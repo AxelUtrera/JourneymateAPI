@@ -5,7 +5,11 @@ const CodeStatus = require('../models/codeStatus');
 const getAllUsers = async (req, res) => {
     try {
         const users = await userService.getAllDataUsers();
-        res.json(users);
+        res.status(CodeStatus.OK).json({
+            code:CodeStatus.OK,
+            msg: "Those are all users",
+            users
+        });
     } catch (error) {
         res.json({
             error: CodeStatus.INVALID_DATA,
@@ -18,15 +22,16 @@ const getAllUsers = async (req, res) => {
 //example of refactorized code, only one return point.
 const userByUsername = async (req, res) => {
     let code = CodeStatus.PROCESS_ERROR;
+    let responseMessage = "There is an error";
     let response = null;
-
     try {
         const userFound = await userService.getUserByUsername(req.params.username);
         if (userFound == null) {
             code = CodeStatus.INVALID_DATA;
-            response = 'User not found';
+            responseMessage = 'User not found';
         } else {
             code = CodeStatus.OK;
+            responseMessage = "User found";
             response = userFound;
         }
     } catch (error) {
@@ -37,13 +42,15 @@ const userByUsername = async (req, res) => {
 
     return res.status(code).json({
         code: code,
-        msg: response
+        msg: responseMessage,
+        response
     });
 }
 
 const login = async (req, res) => {
     let codeResult = CodeStatus.PROCESS_ERROR;
     let messageResult = 'There is an error at sign in';
+    let result = null;
     const email = req.body.email;
     const pwd = req.body.password;
     
@@ -51,7 +58,8 @@ const login = async (req, res) => {
         const resultService = await userService.login(email, pwd);
         if(resultService){
             codeResult = CodeStatus.OK,
-            messageResult = resultService;
+            messageResult = "User successfully login";
+            result = resultService;
         }else{
             codeResult = CodeStatus.USER_NOT_FOUND,
             messageResult = `User or password are incorrects`;
@@ -62,7 +70,8 @@ const login = async (req, res) => {
 
     return res.status(codeResult).json({
         code: codeResult,
-        msg : messageResult
+        msg : messageResult,
+        result
     });
 }
 

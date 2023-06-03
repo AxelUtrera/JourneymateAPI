@@ -4,7 +4,8 @@ const CodeStatus = require('../models/codeStatus');
 
 const getAllRoutines = async (req, res) => {
     let resultCode = CodeStatus.PROCESS_ERROR;
-    let response = 'An error was ocurred :(';
+    let responseMessage = 'An error was ocurred :(';
+    let response = [];
 
     try{
         const routinesRecovered = await RoutineService.getAllRoutines();
@@ -13,7 +14,7 @@ const getAllRoutines = async (req, res) => {
             response = routinesRecovered;
         } else {
             resultCode = CodeStatus.ROUTINE_NOT_FOUND;
-            response = "Routines not found";
+            responseMessage = "Routines not found";
         }
     } catch(error){
         Logger.error(`Routine controller error: ${error}`)
@@ -21,7 +22,8 @@ const getAllRoutines = async (req, res) => {
 
     return res.status(resultCode).json({
         code: resultCode,
-        msg: response
+        msg: responseMessage,
+        response
     });
 }
 
