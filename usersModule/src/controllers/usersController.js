@@ -23,7 +23,7 @@ const getAllUsers = async (req, res) => {
 const userByUsername = async (req, res) => {
     let code = CodeStatus.PROCESS_ERROR;
     let responseMessage = "There is an error";
-    let response = null;
+    let result = null;
     try {
         const userFound = await userService.getUserByUsername(req.params.username);
         if (userFound == null) {
@@ -32,7 +32,7 @@ const userByUsername = async (req, res) => {
         } else {
             code = CodeStatus.OK;
             responseMessage = "User found";
-            response = userFound;
+            result = userFound;
         }
     } catch (error) {
         code = CodeStatus.INVALID_DATA
@@ -43,7 +43,7 @@ const userByUsername = async (req, res) => {
     return res.status(code).json({
         code: code,
         msg: responseMessage,
-        response
+        result
     });
 }
 
@@ -122,7 +122,7 @@ const editProfile = async (req, res) => {
 
     try {
         const username = req.body.username;
-        const editedProfile = req.body.profile_data;
+        const editedProfile = req.body;
 
         const validation = await Promise.all([
             validateEditProfileTypes(username, editedProfile),
@@ -140,8 +140,8 @@ const editProfile = async (req, res) => {
             response = "user modified succesfully :D"
         }
     } catch (error) {
-        response = "An error has been ocurred while adding a new routine"
-        Logger.error(`Routine controller error: ${error}`)
+        response = "An error has been ocurred while updating the user"
+        Logger.error(`User controller error: ${error}`)
     }
 
     return res.status(resultCode).json({

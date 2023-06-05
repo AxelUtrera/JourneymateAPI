@@ -11,6 +11,10 @@ const routineSchema = new mongoose.Schema(
         country: String,
         routine_description: String,
         visibility: String,
+        followers: {
+            type: Number,
+            default: 0
+        },
         label_category: String,
         state_country: String,
         town: String,
@@ -30,13 +34,7 @@ const routineSchema = new mongoose.Schema(
         },
         tasks: {
             type: [
-                {
-                    task: {
-                        type: String,
-                        
-                    },
-                    _id: false
-                }
+                
             ],
             default: []
             

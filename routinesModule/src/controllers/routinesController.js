@@ -42,7 +42,7 @@ const getRoutinesCreatedByUser = async (req,res) => {
 
         }else{
             codeResult = CodeStatus.OK;
-            responseMessage = "Routines obtained"
+            responseMessage = "Routines created"
             response = resultOperation;
         }
     }catch (error){
@@ -70,11 +70,11 @@ const getRoutinesFollowedByUser = async (req,res) => {
 
         }else{
             codeResult = CodeStatus.OK;
-            message = "Routines found";
+            message = "Routines followed";
             response = resultOperation;
         }
     }catch (error){
-        Logger.error(`Routine controller error: ${{error}}`);
+        Logger.error(`Routine controller error: ${error}`);
     }
 
     return res.status(codeResult).json({
@@ -84,9 +84,11 @@ const getRoutinesFollowedByUser = async (req,res) => {
     });
 }
 
+
 const addNewRoutine = async(req, res) => {
     let resultCode = CodeStatus.PROCESS_ERROR;
-    let response = "New routine not added :("
+    let responseMessage = "New routine not added :("
+    let response;
 
     try{
         const username = req.body.routine_creator
@@ -102,20 +104,21 @@ const addNewRoutine = async(req, res) => {
 
         if(validationErrors.length > 0){
             resultCode = CodeStatus.INVALID_DATA
-            response = "Some data aren't valid, verify and retry :("
+            responseMessage = "Some data aren't valid, verify and retry :("
         } else {
-            await RoutineService.addNewRoutine(username, newRoutine)
+            response = await RoutineService.addNewRoutine(username, newRoutine)
             resultCode = CodeStatus.OK;
-            response = "Routine added succesfully :D"
+            responseMessage = "Routine added succesfully :D"
         }
     } catch (error) {
-        response = "An error has been ocurred while adding a new routine"
+        responseMessage = "An error has been ocurred while adding a new routine"
         Logger.error(`Routine controller error: ${error}`)
     }
 
     return res.status(resultCode).json({
         code: resultCode,
-        msg: response
+        msg: responseMessage,
+        response
     });
 }
 
@@ -171,8 +174,8 @@ const editRoutine = async(req, res) => {
     let response = "Routine not modified :("
 
     try{
-        const idRoutine = req.body.idRoutine
-        const editedRoutine = req.body.routine
+        const idRoutine = req.params.idRoutine;
+        const editedRoutine = req.body;
 
         const validation = await Promise.all([
             validateRoutineNotEmpty(editedRoutine),
@@ -278,6 +281,7 @@ const validateRoutine = (dataEntry) =>{
 
     if(typeof dataEntry.routine_creator !== "string")
         resultValidation = CodeStatus.DATA_REQUIRED
+    
 
     return resultValidation;
 }

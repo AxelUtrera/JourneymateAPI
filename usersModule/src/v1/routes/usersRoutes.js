@@ -8,5 +8,5 @@ router.get('/:username', userByUsername)
 router.post('/', createNewUser);
 router.post('/login', login)
 router.delete('/:username', deleteUser);
-router.put('/', editProfile);
+router.patch('/', editProfile);
 module.exports = router;

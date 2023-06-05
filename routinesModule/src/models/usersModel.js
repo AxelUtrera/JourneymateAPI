@@ -72,7 +72,7 @@ const userSchema = new mongoose.Schema(
             type: [
                 {
                     routine: {
-                        type: String,
+                        type: Object,
                         ref: "routine"
                     },
                     _id: false

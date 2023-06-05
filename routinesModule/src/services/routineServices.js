@@ -3,51 +3,59 @@ const Logger = require('../config/logger');
 const CodeStatus = require('../models/codeStatus');
 const User = require('../models/usersModel');
 const Task = require('../models/tasksModel')
-const { Types } = require('mongoose');
+const { Types, default: mongoose } = require('mongoose');
 
 
 const getAllRoutines = async () => {
     let routineResult = [];
-    try {
-        const dataRoutines = await Routine.find({});
-        routineResult = dataRoutines;
-    } catch (error) {
-        Logger.error(`Routine service error: ${error}`);
-    }
-    return routineResult;
+    return new Promise((resolve, reject) => {
+        const dataRoutines = Routine.find({})
+        .then((dataRoutines) => {
+            routineResult = dataRoutines;
+            resolve(routineResult)
+        })
+        .catch((error) => {
+            reject(CodeStatus.PROCESS_ERROR)
+            Logger.error(`Routine service error: ${error}`)
+        })
+    });
 }
 
 
 const getRoutineByID = async (routineId) => {
     let routineObtained = {};
-    try {
-        const routineRecovered = await Routine.findById(routineId);
-        if (routineRecovered != null) {
-            routineObtained = routineRecovered;
-        } else {
-            routineObtained = CodeStatus.ROUTINE_NOT_FOUND;
-        }
-    } catch (error) {
-        Logger.error(`Routine service error: ${error}`);
-    }
-    return routineObtained;
+    return new Promise((resolve, reject) => {
+        const routineRecovered = Routine.findById(routineId)
+        .then((routineRecovered) => {
+            routineObtained = routineRecovered
+            resolve(routineObtained)
+        })
+        .catch((error) => {
+            reject(error)
+            Logger.error(`Routine service error: ${error}`)
+        })
+    })
 }
 
 
 const addNewRoutine = async (username, newRoutine) => {
     let resultCode = CodeStatus.PROCESS_ERROR;
     const routine = new Routine(newRoutine)
-    try {
-        const idRoutineAdded = await saveRoutine(routine);
-        await addRoutineToUser(username, idRoutineAdded);
-        resultCode = CodeStatus.OK;
-    } catch (error) {
-        Logger.error(`Service error: ${error}`)
-    }
 
-    return resultCode;
+    return new Promise((resolve, reject) => {
+        const idRoutineAdded = saveRoutine(routine)
+        .then((idRoutineAdded) => {
+            addRoutineToUser(username, idRoutineAdded)
+            resultCode = idRoutineAdded
+            resolve(resultCode)
+        })
+        .catch((error) => {
+            reject(CodeStatus.PROCESS_ERROR)
+            Logger.error(`Routine service error: ${error}`)
+        })
+    })
 }
-
+  
 
 const saveRoutine = async (newRoutine) => {
     return new Promise((resolve, reject) => {
@@ -96,15 +104,35 @@ const editRoutine = async(idRoutine, editedRoutine) => {
 
 
 const followRoutine = async(username, idRoutine) => {
+    let routineData = {}
+    const routineObtained = await Routine.findById(idRoutine);
+
+    if(routineObtained != null){
+        const taskObtained = await getTaskByIDRoutine(idRoutine);
+        if(taskObtained != null){
+            routineObtained.tasks = taskObtained;
+            routineData = routineObtained;
+        }
+    }
+
     return new Promise((resolve, reject) => {
         User.findOneAndUpdate({username: username},
-            {$push: {"followed_routines": {"routine": idRoutine}}},
+            {$push: {"followed_routines": {"routine": routineData}}},
             {new: true}
         )
         .then(() => {
-            resolve(CodeStatus.OK)
+            Routine.findByIdAndUpdate(idRoutine,
+            { $inc: { followers: 1 }}
+            )
+            .then(() => {
+                resolve(CodeStatus.OK);
+            })
+            .catch((error) => {
+                reject(CodeStatus.PROCESS_ERROR)
+                Logger.error(`Routine service error: ${error}`)    
+            })
         })
-        .catch(() => {
+        .catch((error) => {
             reject(CodeStatus.PROCESS_ERROR)
             Logger.error(`Routine service error: ${error}`)
         })
@@ -114,12 +142,20 @@ const followRoutine = async(username, idRoutine) => {
 
 const unfollowRoutine = async(username, idRoutine) => {
     return new Promise((resolve, reject) => {
-        User.findOneAndUpdate({username: username},
-            {$pull: {"followed_routines": {"routine": idRoutine}}},
-            {new: true}
+        User.updateOne({username: username},
+            {$pull: {"followed_routines": {"routine._id": new Types.ObjectId(idRoutine)}}}
         )
         .then(() => {
-            resolve(CodeStatus.OK)
+            Routine.findByIdAndUpdate(idRoutine,
+                { $inc: { followers: -1 }}
+                )
+                .then(() => {
+                    resolve(CodeStatus.OK);
+                })
+                .catch((error) => {
+                    reject(CodeStatus.PROCESS_ERROR)
+                    Logger.error(`Routine service error: ${error}`)    
+                })
         })
         .catch(() => {
             reject(CodeStatus.PROCESS_ERROR)
@@ -183,46 +219,62 @@ const valueRoutine = async (idRoutine, valoration) => {
 const getRoutinesCreatedByUser = async (usern) => {
     let resultRoutines = [];
 
-    try {
-        const user = await User.findOne({"username": usern});
-        const userRoutineLists = user.routines_created;
-        const idsRoutinesOfUser = userRoutineLists.map((routinesOnList) => new Types.ObjectId(routinesOnList.routine));
-
-        if (idsRoutinesOfUser) {
-            const routinesRecovered = await Routine.find({ _id: { $in: idsRoutinesOfUser } });
-            resultRoutines = routinesRecovered;
-        } else {
-            resultRoutines = CodeStatus.PROCESS_ERROR;
-        }
-
-    } catch (error) {
-        Logger.error(`Routine service error: ${error}`);
-    }
-
-    return resultRoutines;
+    return new Promise((resolve, reject) => {
+        const user = User.findOne({"username": usern})
+        .then((user) => {
+            const userRoutineLists = user.routines_created;
+            const idsRoutinesOfUser = userRoutineLists.map((routinesOnList) => new Types.ObjectId(routinesOnList.routine));
+            const routinesRecovered = Routine.find({ _id: { $in: idsRoutinesOfUser } })
+            resultRoutines = routinesRecovered
+            resolve(resultRoutines)
+        })
+        .catch((error) => {
+            reject(CodeStatus.PROCESS_ERROR)
+            Logger.error(`Routine service error: ${error}`);
+        })
+    })
 }
 
 
 const getRoutinesFollowedByUser = async (usern) => {
     let resultRoutines = [];
 
-    try {
-        const user = await User.findOne({"username": usern});
-        const userRoutineLists = user.followed_routines;
-        const idsRoutinesOfUser = userRoutineLists.map((routinesOnList) => new Types.ObjectId(routinesOnList.routine));
+    return new Promise((resolve, reject) => {
+        const user = User.findOne({"username": usern})
+        .then((user) => {
+            const userRoutineLists = user.followed_routines;
+            resultRoutines = userRoutineLists
+            console.log(resultRoutines)
+            resolve(resultRoutines)
+        })
+        .catch((error) => {
+            reject(CodeStatus.PROCESS_ERROR)
+            Logger.error(`Routine service error: ${error}`);
+        })
+    })
+}
 
-        if (idsRoutinesOfUser) {
-            const routinesRecovered = await Routine.find({ _id: { $in: idsRoutinesOfUser } });
-            resultRoutines = routinesRecovered;
+
+const getTaskByIDRoutine = async (routineId) => {
+    let resultTask = [];
+
+    try {
+        const routine = await Routine.findById(routineId);
+        const routineTasksLists = routine.tasks;
+        const idsTasksOfRoutine = routineTasksLists.map((taskOnList) => new Types.ObjectId(taskOnList.task));
+
+        if (idsTasksOfRoutine) {
+            const tasksRecovered = await Task.find({ _id: { $in: idsTasksOfRoutine } });
+            resultTask = tasksRecovered;
         } else {
-            resultRoutines = CodeStatus.PROCESS_ERROR;
+            resultTask = CodeStatus.PROCESS_ERROR;
         }
 
     } catch (error) {
-        Logger.error(`Routine service error: ${error}`);
+        Logger.error(`Task service error: ${error}`);
     }
 
-    return resultRoutines;
+    return resultTask;
 }
 
 
