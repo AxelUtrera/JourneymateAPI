@@ -110,6 +110,10 @@ const followRoutine = async(username, idRoutine) => {
     if(routineObtained != null){
         const taskObtained = await getTaskByIDRoutine(idRoutine);
         if(taskObtained != null){
+
+            for(const task of taskObtained){
+                task.isCompleted = false;
+            }
             routineObtained.tasks = taskObtained;
             routineData = routineObtained;
         }
@@ -117,7 +121,7 @@ const followRoutine = async(username, idRoutine) => {
 
     return new Promise((resolve, reject) => {
         User.findOneAndUpdate({username: username},
-            {$push: {"followed_routines": {"routine": routineData}}},
+            {$push: {"followed_routines": routineData}},
             {new: true}
         )
         .then(() => {
@@ -143,7 +147,7 @@ const followRoutine = async(username, idRoutine) => {
 const unfollowRoutine = async(username, idRoutine) => {
     return new Promise((resolve, reject) => {
         User.updateOne({username: username},
-            {$pull: {"followed_routines": {"routine._id": new Types.ObjectId(idRoutine)}}}
+            {$pull: {"followed_routines": {_id: new Types.ObjectId(idRoutine)}}}
         )
         .then(() => {
             Routine.findByIdAndUpdate(idRoutine,
@@ -157,7 +161,7 @@ const unfollowRoutine = async(username, idRoutine) => {
                     Logger.error(`Routine service error: ${error}`)    
                 })
         })
-        .catch(() => {
+        .catch((error) => {
             reject(CodeStatus.PROCESS_ERROR)
             Logger.error(`Routine service error: ${error}`)
         })

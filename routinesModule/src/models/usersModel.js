@@ -70,13 +70,6 @@ const userSchema = new mongoose.Schema(
 
         followed_routines: {
             type: [
-                {
-                    routine: {
-                        type: Object,
-                        ref: "routine"
-                    },
-                    _id: false
-                },
             ],
             default: []
         },
