@@ -48,11 +48,6 @@ const userSchema = new mongoose.Schema(
             default: "México" 
         },
 
-        role: { 
-            type: String, 
-            default: "User" 
-        },
-
         user_description: {
             type: String,
             default: function () {
@@ -75,13 +70,6 @@ const userSchema = new mongoose.Schema(
 
         followed_routines: {
             type: [
-                {
-                    routine: {
-                        type: String,
-                        ref: "routine"
-                    },
-                    _id: false
-                },
             ],
             default: []
         },
