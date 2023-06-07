@@ -128,3 +128,97 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Carpeta de salida de compilación
+bin/
+obj/
+
+# Archivos de caché y logs generados por Visual Studio
+.vs/
+*.user
+*.suo
+*.bak
+*.cache
+*.log
+*.vspscc
+*.vssscc
+*.digested
+*.pidb
+*.svclog
+*.sln.docstates
+
+# Otros archivos y carpetas generados por Visual Studio
+_ReSharper*/
+*.resharper*
+[Tt]humbs.db
+*.vssettings
+.vscode/
+
+# Carpetas y archivos específicos de tipos de proyectos comunes
+# Descomenta las líneas que correspondan a tus necesidades
+
+# Proyectos de C#
+# *.csproj
+# !*.Design.csproj
+# *.sln
+
+# Proyectos de Visual Basic
+# *.vbproj
+# !*.Design.vbproj
+# *.vbp
+# *.vspscc
+
+# Proyectos de C++
+# *.vcxproj
+# !*.Design.vcxproj
+# *.vcproj
+# *.vcxitems
+# *.vcxitems.filters
+
+# Proyectos de F#
+# *.fsproj
+# !*.Design.fsproj
+
+# Proyectos de Web
+# *.csproj.user
+# *.vbproj.user
+# *.fsproj.user
+# _PublishedWebsites/
+# *.pubxml
+# *.publishproj
+# *.azurePubxml
+# *.[Pp]ublish.xml
+
+# Proyectos de Node.js
+# node_modules/
+# package-lock.json
+
+# Proyectos de TypeScript
+# *.tsbuildinfo
+# *.db.ts
+# *.js.map
+
+# Proyectos de Xamarin
+# *.apk
+# *.aab
+# *.app
+# *.ipa
+# *.xcarchive
+
+# Proyectos de Unity
+# [Ll]ibrary/
+# [Tt]emp/
+# [Oo]bj/
+# [Bb]uild/
+# [Bb]uilds/
+# [Ss]tats/
+# Bin/
+# [Bb]uild[Mm]anifest.xml
+# *.unityproj
+# *.booproj
+# *.svd
+# *.userprefs
+# *.dll
+# *.pdb
+# *.mdb
+# .idea/

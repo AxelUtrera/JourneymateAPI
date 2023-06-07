@@ -1,13 +1,15 @@
-const { response } = require('express');
 const userService = require('../services/userServices')
 const Logger = require('../config/logger');
 const CodeStatus = require('../models/codeStatus');
 
-
 const getAllUsers = async (req, res) => {
     try {
         const users = await userService.getAllDataUsers();
-        res.json(users);
+        res.status(CodeStatus.OK).json({
+            code:CodeStatus.OK,
+            msg: "Those are all users",
+            users
+        });
     } catch (error) {
         res.json({
             error: CodeStatus.INVALID_DATA,
@@ -20,26 +22,56 @@ const getAllUsers = async (req, res) => {
 //example of refactorized code, only one return point.
 const userByUsername = async (req, res) => {
     let code = CodeStatus.PROCESS_ERROR;
-    let response = null;
-
+    let responseMessage = "There is an error";
+    let result = null;
     try {
         const userFound = await userService.getUserByUsername(req.params.username);
-        if (!userFound) {
-            statusCode  = CodeStatus.INVALID_DATA;
-            response = 'User not found';
-        }else{
-            statusCode = CodeStatus.OK;
-            response = userFound;
+        if (userFound == null) {
+            code = CodeStatus.INVALID_DATA;
+            responseMessage = 'User not found';
+        } else {
+            code = CodeStatus.OK;
+            responseMessage = "User found";
+            result = userFound;
         }
     } catch (error) {
-        statusCode =  CodeStatus.INVALID_DATA
+        code = CodeStatus.INVALID_DATA
         response = "Upss there is an error...";
         Logger.error(`Service error: ${error}`);
     }
 
-    return res.status(statusCode).json({
+    return res.status(code).json({
         code: code,
-        msg : response
+        msg: responseMessage,
+        result
+    });
+}
+
+const login = async (req, res) => {
+    let codeResult = CodeStatus.PROCESS_ERROR;
+    let messageResult = 'There is an error at sign in';
+    let result = null;
+    const email = req.body.email;
+    const pwd = req.body.password;
+    
+    try{
+        const resultService = await userService.login(email, pwd);
+        if(resultService){
+            codeResult = CodeStatus.OK,
+            messageResult = "User successfully login";
+            result = resultService;
+        }else{
+            codeResult = CodeStatus.USER_NOT_FOUND,
+            messageResult = `User or password are incorrects`;
+        }
+    }catch(error){
+        Logger.error(`Login error: ${error}`)
+    }
+
+    return res.status(codeResult).json({
+        code: codeResult,
+        msg : messageResult,
+        result
     });
 }
 
@@ -47,7 +79,6 @@ const userByUsername = async (req, res) => {
 const createNewUser = async (req, res) => {
     try {
         const user = req.body;
-
         const validations = await Promise.all([
             validateNotEmptyData(user),
             validateUserNotRegistered(user),
@@ -57,13 +88,13 @@ const createNewUser = async (req, res) => {
         const validationErrors = validations.filter((status) => status !== CodeStatus.OK);
 
         if (validationErrors.length > 0) {
-            if(validateUserNotRegistered() !== CodeStatus.OK){
-                res.json({
+            if (validateUserNotRegistered(user) !== CodeStatus.OK) {
+                res.status(CodeStatus.CONFLICT).json({
                     code: CodeStatus.CONFLICT,
                     msg: "Username or email was previusly registered..."
                 });
-            }else{
-                res.json({
+            } else {
+                res.status(CodeStatus.INVALID_DATA).json({
                     code: validationErrors[0],
                     msg: "There is an error with data entry, please retry..."
                 });
@@ -76,7 +107,7 @@ const createNewUser = async (req, res) => {
             });
         }
     } catch (error) {
-        res.json({
+        res.status(CodeStatus.PROCESS_ERROR).json({
             code: error,
             msg: "Upss we have problems, please retry... "
         });
@@ -85,16 +116,42 @@ const createNewUser = async (req, res) => {
 }
 
 
-const usuariosPut = (req, res) => {
-    const { id } = req.params;
-    res.json({
-        msg: "PUT desde la api",
-        id
+const editProfile = async (req, res) => {
+    let resultCode = CodeStatus.PROCESS_ERROR;
+    let response = "Profile not modified :("
+
+    try {
+        const username = req.body.username;
+        const editedProfile = req.body;
+
+        const validation = await Promise.all([
+            validateEditProfileTypes(username, editedProfile),
+            validateEditProfileNotEmpty(username, editedProfile)
+        ]);
+
+        const validationErrors = validation.filter((status) => status !== CodeStatus.OK);
+
+        if (validationErrors.length > 0) {
+            resultCode = CodeStatus.INVALID_DATA
+            response = "Some data aren't valid, verify and retry :("
+        } else {
+            await userService.editProfile(username, editedProfile)
+            resultCode = CodeStatus.OK;
+            response = "user modified succesfully :D"
+        }
+    } catch (error) {
+        response = "An error has been ocurred while updating the user"
+        Logger.error(`User controller error: ${error}`)
+    }
+
+    return res.status(resultCode).json({
+        code: resultCode,
+        msg: response
     });
 }
 
 
-const deleteUser = async (req, res ) => {
+const deleteUser = async (req, res) => {
     const usernameToDelete = req.params.username;
     try {
 
@@ -102,28 +159,21 @@ const deleteUser = async (req, res ) => {
             await userService.deleteUserByUsername(usernameToDelete);
             res.json({
                 code: CodeStatus.OK,
-                msg: `User ${usernameToDelete} was eliminated... `
+                msg: `User ${usernameToDelete} was eliminated...`
             });
         } else {
             res.json({
                 code: CodeStatus.INVALID_DATA,
-                msg: `User ${usernameToDelete} doesn't exists...`
+                msg: `User ${usernameToDelete} doesn't exist...`
             });
         }
     } catch (error) {
         res.json({
             code: error,
-            msg: "There is an error while "
+            msg: "There is an error while deleting the user..."
         });
         Logger.error(`Controller error: ${error}`);
     }
-}
-
-
-const usuariosPatch = (req, res) => {
-    res.json({
-        msg: "Patch desde la api"
-    });
 }
 
 
@@ -159,7 +209,8 @@ const validateNotEmptyData = (userToValidate) => {
     return resultValidation;
 }
 
-const validateDataTypesEntry = (userToValidate) => { 
+
+const validateDataTypesEntry = (userToValidate) => {
     let resultValidation = CodeStatus.OK;
     const dataRequiredCode = CodeStatus.DATA_REQUIRED;
 
@@ -196,24 +247,126 @@ const validateDataTypesEntry = (userToValidate) => {
     return resultValidation;
 }
 
-const validateUserNotRegistered = async (user) => {
-    let resultValidation = CodeStatus.INVALID_DATA;
-    const resultValidationEmail = await userService.findUserByEmail(user.email);
-    const resultValidationUsername = await userService.findUserByUsername(user.username);
 
-    if (resultValidationEmail == null && resultValidationUsername == null) {
-        resultValidation = CodeStatus.OK;
+const validateUserNotRegistered = async (userToValidate) => {
+    let resultValidation = CodeStatus.INVALID_DATA;
+    try {
+        const resultValidationEmail = await userService.findUserByEmail(userToValidate.email);
+        const resultValidationUsername = await userService.findUserByUsername(userToValidate.username);
+
+        if (resultValidationEmail === null && resultValidationUsername === null) {
+            resultValidation = CodeStatus.OK;
+        }
+    } catch (error) {
+        Logger.error(`there is an error at validateUserNotRegistered: ${error}`);
     }
 
     return resultValidation;
-} 
+}
 
+const validateEditProfileTypes = (username, editedProfile) => {
+    let resultValidation = CodeStatus.OK;
+
+    if (typeof username !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.name !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.lastname !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.phone_number !== "string" || !validatePhoneNumber(editedProfile.phone_number))
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.email !== "string" || !validateEmail(editedProfile.email))
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (!Number.isInteger(editedProfile.age))
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    const minimumAge = 14;
+    if (!(editedProfile.age >= minimumAge))
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.city !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.country !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (typeof editedProfile.user_description !== "string")
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    return resultValidation;
+}
+
+
+const validateEditProfileNotEmpty = (username, editedProfile) => {
+    let resultValidation = CodeStatus.OK;
+
+    if (username === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.name === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.lastname === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.phone_number === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.email === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.age === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.city === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.country === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    if (editedProfile.user_description === undefined)
+        resultValidation = CodeStatus.DATA_REQUIRED;
+
+    return resultValidation;
+}
+
+
+const validateEmail = (email) => {
+    let isValid = true;
+
+    var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    if (!mailFormat.test(email))
+        isValid = false;
+
+    return isValid;
+}
+
+
+const validatePhoneNumber = (phoneNumber) => {
+    let isValid = true;
+
+    var phoneFormat = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/
+
+    if (!phoneFormat.test(phoneNumber))
+        isValid = false;
+
+    return isValid;
+}
 
 module.exports = {
+    login,
     getAllUsers,
     userByUsername,
     createNewUser,
-    usuariosPut,
+    editProfile,
     deleteUser,
-    usuariosPatch
+    validateDataTypesEntry,
+    validateNotEmptyData,
+    validateUserNotRegistered
 };

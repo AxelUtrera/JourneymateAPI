@@ -85,11 +85,41 @@ const findUserByEmail = (emailToFind) => {
   })
 }
 
+
+const editProfile = (user, editedProfile) => {
+  return new Promise((resolve, reject) => {
+    User.findOneAndUpdate({username: user}, editedProfile)
+    .then(() => {
+      resolve(CodeStatus.OK);
+    })
+    .catch((error) => {
+      reject(CodeStatus.PROCESS_ERROR);
+      Logger.error(`User service error: ${error}`)
+    });
+  });
+}
+
+
+const login = (email, password) => {
+  return new Promise((resolve, reject) => { 
+    User.findOne({email: email, password: password})
+    .then((userFound) => { 
+        resolve(userFound);
+    })
+    .catch((error) => {
+      reject(CodeStatus.PROCESS_ERROR);
+      Logger.error(`Login error: ${error}`);
+    })
+  });
+}
+
 module.exports = {
   getAllDataUsers,
   getUserByUsername,
   registerNewUser,
   deleteUserByUsername,
   findUserByUsername,
-  findUserByEmail
+  findUserByEmail,
+  editProfile,
+  login
 }
