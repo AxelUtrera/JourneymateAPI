@@ -188,7 +188,6 @@ const deleteTasksByIDRoutine = async (routineId) => {
     try {
         const routine = await Routine.findById(routineId);
         const routineTasksLists = routine.tasks;
-        console.log(routine)
         const idsTasksOfRoutine = routineTasksLists.map((taskOnList) => new Types.ObjectId(taskOnList.task));
         if (idsTasksOfRoutine) {
             await Task.deleteMany({ _id: { $in: idsTasksOfRoutine }})
@@ -248,7 +247,6 @@ const getRoutinesFollowedByUser = async (usern) => {
         .then((user) => {
             const userRoutineLists = user.followed_routines;
             resultRoutines = userRoutineLists
-            console.log(resultRoutines)
             resolve(resultRoutines)
         })
         .catch((error) => {

@@ -48,6 +48,11 @@ const userSchema = new mongoose.Schema(
             default: "México" 
         },
 
+        role: { 
+            type: String, 
+            default: "User" 
+        },
+
         user_description: {
             type: String,
             default: function () {
@@ -59,7 +64,7 @@ const userSchema = new mongoose.Schema(
             type: [
                 {
                     routine: {
-                        type: mongoose.Schema.Types.ObjectId,
+                        type: String,
                         ref: "routine"
                     },
                     _id: false
@@ -72,7 +77,7 @@ const userSchema = new mongoose.Schema(
             type: [
                 {
                     routine: {
-                        type: mongoose.Schema.Types.ObjectId,
+                        type: String,
                         ref: "routine"
                     },
                     _id: false
@@ -84,7 +89,7 @@ const userSchema = new mongoose.Schema(
         users_followed : {
             type: [
                 {
-                    type: mongoose.Schema.Types.ObjectId,
+                    type: String,
                     ref : "user"
                 }
             ],

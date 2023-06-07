@@ -48,6 +48,11 @@ const userSchema = new mongoose.Schema(
             default: "México" 
         },
 
+        role: { 
+            type: String, 
+            default: "User" 
+        },
+
         user_description: {
             type: String,
             default: function () {
