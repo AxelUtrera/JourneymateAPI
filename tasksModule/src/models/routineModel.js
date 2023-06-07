@@ -1,15 +1,20 @@
-const mongoose = require('mongoose');
-
+const { default: mongoose} = require('mongoose');
+const routine = require('mongoose');
 
 const routineSchema = new mongoose.Schema(
     {
         id: mongoose.Schema.Types.ObjectId,
         idRoutine: Number,
         name: String,
+        routine_creator: String,
         city: String,
         country: String,
         routine_description: String,
         visibility: String,
+        followers: {
+            type: Number,
+            default: 0
+        },
         label_category: String,
         state_country: String,
         town: String,
@@ -29,13 +34,7 @@ const routineSchema = new mongoose.Schema(
         },
         tasks: {
             type: [
-                {
-                    task: {
-                        type: String,
-                        
-                    },
-                    _id: false
-                }
+                
             ],
             default: []
             
@@ -60,4 +59,4 @@ const routineSchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model('routine', routineSchema);
+module.exports = routine.model('routine', routineSchema);
