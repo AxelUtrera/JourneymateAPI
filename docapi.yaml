@@ -1,0 +1,899 @@
+openapi: 3.0.3
+info:
+  title: Documentacion API Journeymate 1.0
+  description: |-
+    Journeymate es una aplicación diseñada para los amantes de los viajes y las actividades en ciudades. Con esta app, puedes crear y personalizar rutinas que se ajusten a tus intereses y preferencias. Agrega tareas específicas a tus rutinas y descubre información relevante para hacer de tus viajes una experiencia inolvidable. Explora las rutinas de otros usuarios y encuentra inspiración para tus próximas aventuras. Journeymate es tu compañero de viaje perfecto para organizar y disfrutar de cada momento de tus viajes y actividades en ciudades.
+    
+    Con esta API nuestro objectivo es documentar todos los puntos de acceso a los servicios de nuestra aplicacion asi como brindar un ejemplo del uso de los mismos.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+
+servers:
+  - url: http://localhost:9000/api/v1
+tags:
+  - name: User
+    description: Operaciones disponibles por el modulo usuario.
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+  - name: Routine
+    description: Operaciones disponibles por el modulo rutina.
+  - name: Task
+    description: Operaciones disponibles por el modulo tarea.
+  - name: Review
+    description: Operaciones disponibles para el modulo review.
+paths:
+  /login:
+    post:
+      tags:
+        - User
+      summary: incia sesion con un usuario registrado.
+      description: inicia sesion desde tu cuenta.
+      operationId: login
+      requestBody:
+        description: inicia sesion con una cuenta de usuario.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                email:
+                  type: string
+                password:
+                  type: string
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      format: int32
+                      example: 200
+                    msg:
+                      type: string
+                      example: User successfully login
+                    result:
+                      type: object
+                      properties:
+                        phone_number:
+                          type: string
+                          example: "+1 1234567890"
+                        role:
+                          type: string
+                          example: User
+                        _id:
+                          type: string
+                          example: "646bfb7bf7277fce8853e288"
+                        name:
+                          type: string
+                          example: John Doe
+                        lastname:
+                          type: string
+                          example: Smith
+                        age:
+                          type: integer
+                          format: int32
+                          example: 25
+                        username:
+                          type: string
+                          example: johndoe123
+                        password:
+                          type: string
+                          example: "e01c5ee5e05e1731f3b0c68df95c33fe8321643ef8411d4"
+                        email:
+                          type: string
+                          example: johndoe@example.com
+                        phoneNumber:
+                          type: string
+                          example: "+1 9876543210"
+                        city:
+                          type: string
+                          example: New York
+                        country:
+                          type: string
+                          example: United States
+                        users_followed:
+                          type: array
+                          items:
+                            type: string
+                          example:
+                            - "user1"
+                            - "user2"
+                            - "user3"
+                        userDescription:
+                          type: string
+                          example: Hi there, I'm John Doe
+        '404':
+          description: User or password are incorrects
+  /user/{username}:
+    get:
+      tags:
+        - User
+      summary: buscar por nombre de usuario
+      description: Recupera los datos de un usuario por su nombre de usuario
+      operationId: getUserByUsername
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nombre de usuario a buscar
+      responses:
+        '200':
+          description: Successful operation
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      format: int32
+                      example: 200
+                    msg:
+                      type: string
+                      example: User successfully login
+                    result:
+                      type: object
+                      properties:
+                        phone_number:
+                          type: string
+                          example: "+1 1234567890"
+                        role:
+                          type: string
+                          example: User
+                        _id:
+                          type: string
+                          example: "646bfb7bf7277fce8853e288"
+                        name:
+                          type: string
+                          example: John Doe
+                        lastname:
+                          type: string
+                          example: Smith
+                        age:
+                          type: integer
+                          format: int32
+                          example: 25
+                        username:
+                          type: string
+                          example: johndoe123
+                        password:
+                          type: string
+                          example: "e01c5ee5e05e1731f3b0c68df95c33fe8321643ef8411d4"
+                        email:
+                          type: string
+                          example: johndoe@example.com
+                        phoneNumber:
+                          type: string
+                          example: "+1 9876543210"
+                        city:
+                          type: string
+                          example: New York
+                        country:
+                          type: string
+                          example: United States
+                        users_followed:
+                          type: array
+                          items:
+                            type: string
+                          example:
+                            - "user1"
+                            - "user2"
+                            - "user3"
+                        userDescription:
+                          type: string
+                          example: Hi there, I'm John Doe
+        '404':
+          description: User not found
+    delete:
+      tags:
+         - User
+      summary: Eliminar un usuario por nombre de usuario
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nombre de usuario a eliminar
+      responses:
+        '200':
+          description: Usuario eliminado exitosamente
+        '500':
+          description: Error del servidor
+        '400':
+          description: Error en los datos de entrada
+  /user:
+    post:
+      tags:
+        - User
+      summary: Crear un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: nuevo_usuario
+                name:
+                  type: string
+                  example: Juan
+                lastname:
+                  type: string
+                  example: Pérez
+                email:
+                  type: string
+                  format: email
+                  example: juanperez@example.com
+                age:
+                  type: integer
+                  example: 25
+                password:
+                  type: string
+                  example: "hash de contraseña proporcionado por nuestros clientes"
+                role:
+                  type: string
+                  example: User
+      responses:
+        '200':
+          description: Usuario creado
+        '409':
+          description: El nombre de usuario o contraseña ya han sido registrados.
+        '500':
+          description: Hubo un problema al eliminar al usuario
+    put:
+      tags:
+        - User
+      summary: Actualizar un usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Nombre de usuario
+                profile_data:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Nombre del usuario
+                    lastname:
+                      type: string
+                      description: Apellido del usuario
+                    phone_number:
+                      type: string
+                      description: Número de teléfono del usuario
+                    email:
+                      type: string
+                      description: Dirección de correo electrónico del usuario
+                    age:
+                      type: integer
+                      description: Edad del usuario
+                    city:
+                      type: string
+                      description: Ciudad del usuario
+                    country:
+                      type: string
+                      description: País del usuario
+                    user_description:
+                      type: string
+                      description: Descripción del usuario
+              example:
+                username: pruebadeedicionusuario02_10_prueba
+                profile_data:
+                  name: Sam
+                  lastname: Silva
+                  phone_number: 9848073099
+                  email: emailmodificado@hotmail.com
+                  age: 20
+                  city: Playa del carmen
+                  country: USA
+                  user_description: ejemplo de cambio de cosas
+      responses:
+        '404':
+          description: Datos de entrada inválidos
+        '500':
+          description: Error del servidor
+        '200':
+          description: Usuario actualizado exitosamente
+  /routines:
+      get:
+        tags:
+          - Routine
+        summary: Obtener todas las rutinas
+        operationId: getAllRoutines
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      format: int32
+                      example: 200
+                    msg:
+                      type: string
+                      example: Success
+                    result:
+                      type: array
+                      example: '{}'
+                      
+          '500':
+            description: Error del servicio
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      format: int32
+                      example: 500
+                    msg:
+                      type: string
+                      example: Service error
+      post:
+        tags:
+          - Routine
+        summary: Crear una nueva rutina
+        operationId: createRoutine
+        requestBody:
+          description: Datos de la nueva rutina
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  routine_creator:
+                    type: string
+                  name:
+                    type: string
+                  city:
+                    type: string
+                  country:
+                    type: string
+                  routine_description:
+                    type: string
+                  visibility:
+                    type: string
+                  label_category:
+                    type: string
+                  state_country:
+                    type: string
+                  town:
+                    type: string
+        responses:
+          '200':
+            description: Rutina creada exitosamente
+          '500':
+            description: Error de servicio
+      put:
+        tags:
+          - Routine
+        summary: Actualizar una rutina existente
+        operationId: updateRoutine
+        requestBody:
+          description: Datos de la rutina a actualizar
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idRoutine:
+                    type: string
+                    example: "646e7aef04ca565f904be2c5"
+                  routine:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "Rutina modificada"
+                      city:
+                        type: string
+                        example: "Ciudad modificada"
+                      country:
+                        type: string
+                        example: "USA"
+                      routine_description:
+                        type: string
+                        example: "Descripción modificada"
+                      visibility:
+                        type: string
+                        example: "private"
+                      label_category:
+                        type: string
+                        example: "Modificada"
+                      town:
+                        type: string
+                        example: "Xalapa"
+        responses:
+          '200':
+            description: Rutina actualizada exitosamente
+          '500':
+            description: Error de servicio
+          '404':
+            description: Datos invalidos
+  /routines/{idRoutine}:
+      delete:
+        tags:
+          - Routine
+        summary: Eliminar una rutina existente
+        operationId: deleteRoutine
+        parameters:
+          - in: path
+            name: idroutine
+            required: true
+            schema:
+              type: string
+            description: ID de la rutina a eliminar
+        responses:
+          '200':
+            description: Rutina eliminada exitosamente
+          '500':
+            description: Error de servicio
+
+                
+  /routines/routinesByUser/{username}:
+      get:
+        tags:
+          - Routine
+        summary: Obtener las rutinas de un usuario
+        operationId: getRoutinesByUser
+        parameters:
+          - in: path
+            name: username
+            required: true
+            schema:
+              type: string
+            description: Nombre de usuario del usuario cuyas rutinas se desean obtener
+        responses:
+          '200':
+            description: Rutinas obtenidas exitosamente
+            content:
+              application/json:
+                schema:
+                  type: array
+          '500':
+            description: Error de servicio
+  /routines/routinesFollowed/{username}:
+    get:
+      tags:
+        - Routine
+      summary: Obtener las rutinas seguidas por un usuario
+      operationId: getFollowedRoutinesByUsername
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Nombre de usuario del usuario para obtener las rutinas seguidas
+      responses:
+        '200':
+          description: Rutinas seguidas obtenidas exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+        '500':
+          description: Error de servicio
+  /routines/followRoutine:
+    post:
+      tags:
+        - Routine
+      summary: Seguir una rutina
+      operationId: followRoutine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: nombre de usuario que dio seguir
+                idRoutine:
+                  type: string
+                  example: id de rutina a seguir
+      responses:
+        '200':
+          description: Rutina seguida exitosamente
+        '500':
+          description: Error de servicio
+  /routines/unfollowRoutine:
+    post:
+      tags:
+        - Routine
+      summary: Dejar de seguir una rutina
+      operationId: unfollowRoutine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: nombre de usuario que deja de seguir la rutina
+                idRoutine:
+                  type: string
+                  example: id de rutina
+      responses:
+        '200':
+          description: Dejó de seguir la rutina exitosamente
+        '500':
+          description: Error de servicio
+  /task:
+    get:
+      tags:
+        - Task
+      summary: Recuperar todas las tareas del sistema
+      operationId: getAllTasks
+      responses:
+        '200':
+          description: Estas son todas las tareas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  msg:
+                    type: string
+                    example: Tareas recuperadas exitosamente
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        taskId:
+                          type: string
+                          example: 123456
+                        taskName:
+                          type: string
+                          example: Tarea 1
+                        taskDescription:
+                          type: string
+                          example: Descripción de la tarea 1
+                        taskStatus:
+                          type: string
+                          example: Pendiente
+                        taskDeadline:
+                          type: string
+                          format: date-time
+                          example: 2023-06-10T12:00:00Z
+                        creatorUsername:
+                          type: string
+                          example: testuser
+        '500': 
+          description: "Ha ocurrido un error"
+        '404': 
+          description: "Tareas no encontradas"
+    post:
+      tags:
+        - Task
+      summary: Crear una nueva tarea
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idRoutine:
+                  type: string
+                  example: 647a7c0f835d98caba7c35a4
+                name:
+                  type: string
+                  example: desde apigateway_buena
+                task_description:
+                  type: string
+                  example: da udsdfsdfsd
+                address:
+                  type: string
+                  example: P.º Los Lagos , 91080 Xalapa-Enríquez, Ver.
+                budget:
+                  type: integer
+                  example: 202
+                isCompleted:
+                  type: boolean
+                  example: false
+      responses:
+        '200':
+          description: Tarea creada exitosamente
+        '404':
+          description: Rutina no encontrada
+        '500':
+          description: Error del servidor
+  /task/{idTask}:
+    get:
+      tags:
+        - Task
+      summary: Obtener una tarea por su ID
+      operationId: getTaskById
+      parameters:
+        - in: path
+          name: idTask
+          required: true
+          schema:
+            type: string
+          description: ID de la tarea a obtener
+      responses:
+        '200':
+          description: Tarea encontrada
+        '404':
+          description: Tarea no encontrada
+        '500':
+          description: Error del servidor
+    put:
+      tags:
+        - Task
+      summary: Editar una tarea por su ID
+      operationId: updateTaskById
+      parameters:
+        - in: path
+          name: idTask
+          required: true
+          schema:
+            type: string
+          description: ID de la tarea a actualizar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: editado desde api
+                task_description:
+                  type: string
+                  example: ejemplo de description
+                address:
+                  type: string
+                  example: P.º Los Lagsos, , 91080 Xalapa-Enríquez, Ver.
+                budget:
+                  type: number
+                  example: 202
+                isCompleted:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Tarea actualizada exitosamente
+        '404':
+          description: Tarea no encontrada
+        '500':
+          description: Error del servidor
+    delete:
+      tags:
+        - Task
+      summary: Eliminar una tarea por su ID
+      operationId: deleteTaskById
+      parameters:
+        - in: path
+          name: idTask
+          required: true
+          schema:
+            type: string
+          description: ID de la tarea a eliminar
+      responses:
+        '200':
+          description: Tarea eliminada exitosamente
+        '500':
+          description: Error del servidor
+  /taskOfRoutines/{idRoutine}:
+    get:
+      tags:
+        - Task
+      summary: Obtener todas las tareas de una rutina por su ID
+      operationId: getTasksByRoutineId
+      parameters:
+        - in: path
+          name: idRoutine
+          required: true
+          schema:
+            type: string
+          description: ID de la rutina para obtener las tareas
+      responses:
+        '200':
+          description: Tareas de la rutina encontradas
+        '500':
+          description: Error del servidor
+  /valueRoutine/:
+    post:
+      tags:
+        - Review
+      summary: Agregar valoración a una rutina
+      operationId: addRoutineValoration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idRoutine:
+                  type: string
+                  description: ID de la rutina a valorar
+                valoration:
+                  type: object
+                  properties:
+                    user:
+                      type: string
+                      description: Usuario que realiza la valoración
+                    valoration:
+                      type: integer
+                      description: Valoración de la rutina (de 1 a 5)
+              example:
+                idRoutine: "6468229e69fba9488baed6b6"
+                valoration:
+                  user: "test"
+                  valoration: 2
+      responses:
+        '404':
+          description: No se encontró la rutina
+        '500':
+          description: Error del servidor
+        '200':
+          description: Valoración agregada exitosamente 
+
+  /valueTask/:
+    post:
+      tags:
+        - Review
+      summary: Agregar valoración a una tarea
+      operationId: addTaskValoration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idRoutine:
+                  type: string
+                  description: ID de la tarea a valorar
+                valoration:
+                  type: object
+                  properties:
+                    user:
+                      type: string
+                      description: Usuario que realiza la valoración
+                    valoration:
+                      type: integer
+                      description: Valoración de la tarea (de 1 a 5)
+              example:
+                idRoutine: "6468229e69fba9488baed6b6"
+                valoration:
+                  user: "test"
+                  valoration: 2
+      responses:
+        '404':
+          description: No se encontró la tarea
+        '500':
+          description: Error del servidor
+        '200':
+          description: Valoración agregada exitosamente 
+
+  /commentRoutine:
+    post:
+      tags:
+        - Review
+      summary: Agregar comentario a una rutina
+      operationId: addRoutineComment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idRoutine:
+                  type: string
+                  description: ID de la rutina a comentar
+                comment:
+                  type: object
+                  properties:
+                    comment_creator:
+                      type: string
+                      description: Usuario que realiza el comentario
+                    date_creation:
+                      type: string
+                      format: date
+                      description: Fecha de creación del comentario (formato YYYY-MM-DD)
+                    comment_description:
+                      type: string
+                      description: Descripción del comentario
+              example:
+                idRoutine: "6468229e69fba9488baed6b6"
+                comment:
+                  comment_creator: "dpax"
+                  date_creation: "2023-05-20"
+                  comment_description: "Comentario de prueba"
+      responses:
+        '404':
+          description: No se encontró la rutina
+        '500':
+          description: Error del servidor
+        '200':
+          description: Comentario agregado exitosamente
+  /commentTask:
+    post:
+      tags:
+        - Review
+      summary: Agregar comentario a una tarea
+      operationId: addTaskComment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idRoutine:
+                  type: string
+                  description: ID de la tarea a comentar
+                comment:
+                  type: object
+                  properties:
+                    comment_creator:
+                      type: string
+                      description: Usuario que realiza el comentario
+                    date_creation:
+                      type: string
+                      format: date
+                      description: Fecha de creación del comentario (formato YYYY-MM-DD)
+                    comment_description:
+                      type: string
+                      description: Descripción del comentario
+              example:
+                idRoutine: "6468229e69fba9488baed6b6"
+                comment:
+                  comment_creator: "dpax"
+                  date_creation: "2023-05-20"
+                  comment_description: "Comentario de prueba"
+      responses:
+        '404':
+          description: No se encontró la tarea
+        '500':
+          description: Error del servidor
+        '200':
+          description: Comentario agregado exitosamente
+  
+  
+  
+
+
+
