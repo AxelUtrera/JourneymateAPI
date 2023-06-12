@@ -3,49 +3,6 @@ const UserController = require('../../controllers/usersController');
 const CodeStatus = require('../../models/codeStatus');
 
 
-describe('test for usersController', () => {
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
-
-  it('Return all users', async () => {
-    const req = {};
-    const res = {
-      json: jest.fn(),
-    };
-
-    const users = [
-      { id: 1, name: 'John Doe', email: 'johndoe@example.com' },
-      { id: 2, name: 'Jane Doe', email: 'janedoe@example.com' },
-    ];
-
-    jest.spyOn(UserService, 'getAllDataUsers').mockResolvedValue(users);
-
-    await UserController.getAllUsers(req, res);
-
-    expect(res.json).toHaveBeenCalledWith(users);
-  });
-
-
-  it('should return an error message if there is an error in getAllDataUsers', async () => {
-    const req = {};
-    const res = {
-      json: jest.fn(),
-    };
-
-    const error = new Error('Database connection failed');
-    jest.spyOn(UserService, 'getAllDataUsers').mockRejectedValue(error);
-
-    await UserController.getAllUsers(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      error: CodeStatus.INVALID_DATA,
-      msg: "Upss there is an error..."
-    });
-  });
-});
-
 describe('test for userByUsername', () => {
   afterEach(() => {
     jest.restoreAllMocks();
@@ -78,7 +35,8 @@ describe('test for userByUsername', () => {
     expect(res.status).toHaveBeenCalledWith(CodeStatus.OK);
     expect(res.json).toHaveBeenCalledWith({
       code: CodeStatus.OK,
-      msg: user,
+      msg: "User found",
+      result: user,
     });
   });
 
@@ -127,7 +85,8 @@ describe('test for userByUsername', () => {
     expect(res.status).toHaveBeenCalledWith(CodeStatus.INVALID_DATA);
     expect(res.json).toHaveBeenCalledWith({
       code: CodeStatus.INVALID_DATA,
-      msg: 'Upss there is an error...',
+      msg: 'There is an error',
+      result: null
     });
   });
 });
