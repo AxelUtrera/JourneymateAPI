@@ -16,7 +16,7 @@
         },
         {
             "UpstreamPathTemplate": "/api/{version}/user/",
-            "UpstreamHttpMethod" : [ "GET", "POST", "PUT" ],
+            "UpstreamHttpMethod" : [ "GET", "POST", "PATCH" ],
             "UpstreamScheme" : "http",
             "DownstreamScheme" : "http",
             "DownstreamHostAndPorts" : [
@@ -69,7 +69,7 @@
             "DownstreamPathTemplate": "/api/{version}/routines/addNewRoutine/"
         },
         {
-            "UpstreamPathTemplate": "/api/{version}/routines/",
+            "UpstreamPathTemplate": "/api/{version}/routines/{idRoutine}",
             "UpstreamHttpMethod" : ["PUT"],
             "UpstreamScheme" : "http",
             "DownstreamScheme" : "http",
@@ -79,7 +79,20 @@
                     "Port": 9012
                 }
             ],
-            "DownstreamPathTemplate": "/api/{version}/routines/editRoutine/"
+            "DownstreamPathTemplate": "/api/{version}/routines/editRoutine/{idRoutine}"
+        },
+        {
+            "UpstreamPathTemplate": "/api/{version}/routines/{idRoutine}",
+            "UpstreamHttpMethod" : ["GET"],
+            "UpstreamScheme" : "http",
+            "DownstreamScheme" : "http",
+            "DownstreamHostAndPorts" :[
+                {
+                    "Host": "localhost",
+                    "Port": 9012
+                }
+            ],
+            "DownstreamPathTemplate": "/api/{version}/routines/routineDetails/{idRoutine}"
         },
         {
             "UpstreamPathTemplate": "/api/{version}/routines/{id}",

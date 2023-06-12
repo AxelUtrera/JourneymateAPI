@@ -40,3 +40,45 @@ C:\Users\moron\OneDrive - Universidad Veracruzana\8vo semestre\Desarrollo de sis
 C:\Users\moron\OneDrive - Universidad Veracruzana\8vo semestre\Desarrollo de sistemas en red\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.pdb
 C:\Users\moron\OneDrive - Universidad Veracruzana\8vo semestre\Desarrollo de sistemas en red\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.genruntimeconfig.cache
 C:\Users\moron\OneDrive - Universidad Veracruzana\8vo semestre\Desarrollo de sistemas en red\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\ref\journeymateAPIGateway.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\ApiGatewayConfig.json
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\appsettings.Development.json
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\appsettings.json
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\journeymateAPIGateway.exe
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\journeymateAPIGateway.deps.json
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\journeymateAPIGateway.runtimeconfig.json
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\journeymateAPIGateway.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\journeymateAPIGateway.pdb
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\FluentValidation.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Microsoft.AspNetCore.MiddlewareAnalysis.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Microsoft.Extensions.DiagnosticAdapter.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Microsoft.OpenApi.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Newtonsoft.Json.Bson.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Ocelot.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.csproj.AssemblyReference.cache
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.AssemblyInfoInputs.cache
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.AssemblyInfo.cs
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.csproj.CoreCompileInputs.cache
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\staticwebassets\msbuild.journeymateAPIGateway.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\staticwebassets\msbuild.build.journeymateAPIGateway.props
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.journeymateAPIGateway.props
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.journeymateAPIGateway.props
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\staticwebassets.pack.json
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\staticwebassets.build.json
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\staticwebassets.development.json
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\scopedcss\bundle\journeymateAPIGateway.styles.css
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.csproj.CopyComplete
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\refint\journeymateAPIGateway.dll
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.pdb
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\journeymateAPIGateway.genruntimeconfig.cache
+C:\Users\danie\OneDrive\Documentos\Journeymate-NodeJs\JourneymateAPI\journeymateAPIGateway\obj\Debug\net7.0\ref\journeymateAPIGateway.dll
