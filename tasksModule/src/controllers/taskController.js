@@ -220,5 +220,7 @@ module.exports = {
     addNewTask,
     getAllTasksByIdRoutine,
     editTask,
-    deleteTask
+    deleteTask,
+    validateTypesOfDataEntry,
+    validateDataNotEmpty
 };
